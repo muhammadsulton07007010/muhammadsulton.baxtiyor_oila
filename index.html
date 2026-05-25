@@ -1,0 +1,2850 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Kiberxavfsizlik Asoslari — Mukammal Yakuniy Nazorat Bazasi (141 ta Savol)
+    </title>
+    <style>
+      :root {
+        --primary: #0f172a;
+        --accent: #3b82f6;
+        --success: #10b981;
+        --danger: #ef4444;
+        --bg: #f8fafc;
+        --text: #334155;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 850px;
+        margin: 0 auto;
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow:
+          0 4px 6px -1px rgb(0 0 0 / 0.1),
+          0 2px 4px -2px rgb(0 0 0 / 0.1);
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 20px;
+      }
+
+      h1 {
+        color: var(--primary);
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      .subtitle {
+        color: #64748b;
+        font-size: 14px;
+      }
+
+      .setup-screen {
+        text-align: center;
+        padding: 20px 0;
+      }
+
+      .setup-screen p {
+        margin-bottom: 20px;
+        font-size: 16px;
+      }
+
+      .options-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-bottom: 30px;
+      }
+
+      .mode-btn {
+        padding: 12px;
+        font-size: 15px;
+        font-weight: bold;
+        background: #fff;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .mode-btn:hover {
+        border-color: var(--accent);
+        background: #f0f7ff;
+      }
+
+      .mode-btn.selected {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+
+      .quiz-progress {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+
+      .progress-bar-container {
+        width: 100%;
+        background-color: #e2e8f0;
+        height: 8px;
+        border-radius: 4px;
+        margin-bottom: 25px;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background-color: var(--accent);
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+
+      .question-card h2 {
+        font-size: 18px;
+        color: var(--primary);
+        margin-bottom: 20px;
+      }
+
+      .options-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .option-btn {
+        width: 100%;
+        padding: 14px 20px;
+        text-align: left;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 15px;
+        transition: all 0.2s ease;
+      }
+
+      .option-btn:hover:not(:disabled) {
+        border-color: var(--accent);
+        background-color: #f0f7ff;
+      }
+
+      .option-btn.correct {
+        background-color: #ecfdf5;
+        border-color: var(--success);
+        color: #065f46;
+        font-weight: 600;
+      }
+
+      .option-btn.wrong {
+        background-color: #fef2f2;
+        border-color: var(--danger);
+        color: #991b1b;
+      }
+
+      .footer-controls {
+        margin-top: 30px;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .btn {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 15px;
+        transition: background 0.2s;
+      }
+
+      .btn-primary {
+        background-color: var(--accent);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #2563eb;
+      }
+
+      .btn-primary:disabled {
+        background-color: #94a3b8;
+        cursor: not-allowed;
+      }
+
+      #result-screen {
+        text-align: center;
+        padding: 20px 0;
+      }
+
+      .score-circle {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: #f1f5f9;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: 20px auto;
+        border: 4px solid var(--accent);
+      }
+
+      .score-num {
+        font-size: 36px;
+        font-weight: bold;
+        color: var(--primary);
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Kiberxavfsizlik Asoslari</h1>
+        <p class="subtitle">
+          2-kurs Dasturiy injinering yo'nalishi — Barcha 141 ta savol bazasi
+        </p>
+      </header>
+
+      <div id="setup-screen" class="setup-screen">
+        <h2>Test tizimiga xush kelibsiz</h2>
+        <p>Bazadagi 141 ta savoldan test qilish uchun miqdorni tanlang:</p>
+        <div class="options-grid">
+          <button class="mode-btn selected" onclick="selectCount(25, this)">
+            25 ta savol
+          </button>
+          <button class="mode-btn" onclick="selectCount(141, this)">
+            Hammasi(141)
+          </button>
+        </div>
+        <button
+          onclick="startQuiz()"
+          class="btn btn-primary"
+          style="width: 100%; padding: 15px; font-size: 16px"
+        >
+          Testni Boshlash
+        </button>
+      </div>
+
+      <div id="quiz-screen" class="hidden">
+        <div class="quiz-progress">
+          <span id="question-number">Savol: 1/25</span>
+          <span id="score-counter">To'g'ri javoblar: 0</span>
+        </div>
+        <div class="progress-bar-container">
+          <div id="progress-bar" class="progress-bar"></div>
+        </div>
+
+        <div class="question-card">
+          <h2 id="question-text">Savol yuklanmoqda...</h2>
+          <div class="options-list" id="options-container"></div>
+        </div>
+
+        <div class="footer-controls">
+          <button id="next-btn" class="btn btn-primary" disabled>
+            Keyingi savol
+          </button>
+        </div>
+      </div>
+
+      <div id="result-screen" class="hidden">
+        <h2>Test yakunlandi!</h2>
+        <div class="score-circle">
+          <span class="score-num" id="final-score">0/0</span>
+          <span>To'g'ri javob</span>
+        </div>
+        <p
+          id="result-message"
+          style="margin-bottom: 25px; font-weight: 500; font-size: 16px"
+        ></p>
+        <button onclick="restartQuiz()" class="btn btn-primary">
+          Bosh sahifaga qaytish
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // FAYLDAGI BARCHA 141 TA NOYOB SAVOLLAR JAMLANMASI (TUGALLANGAN HOLATDA)
+      const allQuestions = [
+        {
+          question:
+            'Axborot xavfsizligining "CIA" triadasi (uchligi) qaysi elementlarni o\'z ichiga oladi?',
+          options: [
+            "Konfidentsiallik (Maxfiylik), Yaxlitlik (Integrity), Foydalanuvchanlik (Availability)",
+            "Kriptografiya, Identifikatsiya, Autentifikatsiya",
+            "Kiberjinoyat, Hujum, Mudofaa",
+            "Tarmoq, Shifrlash, Blokirovka",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Asimmetrik shifrlash (ochiq kalitli kriptotizim) jarayonida ma'lumotni shifrlash uchun qaysi kalitdan foydalaniladi?",
+          options: [
+            "Ochiq kalit (Public key)",
+            "Faqat maxfiy kalit (Private key)",
+            "Sessiya kaliti",
+            "Simmetrik umumiy kalit",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Ma'lumotlarning uzatish paytida o'zgartirilmaganligini (yaxlitligini) tekshirish uchun odatda qanday texnologiya qo'llaniladi?",
+          options: [
+            "Xesh-funksiyalar (MD5, SHA-256)",
+            "Asimmetrik shifrlash algoritmlari",
+            "Tarmoqlararo ekran (Firewall)",
+            "Parol menejerlari",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Vijiner shifrlash usuli kriptografiyaning qaysi turiga kiradi?",
+          options: [
+            "Polialfavitli almashtirish shifri",
+            "Monoalfavitli almashtirish shifri",
+            "Asimmetrik kriptotizim",
+            "Blokli zamonaviy shifrlash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Tarmoqlararo ekran (Firewall) qurilmasining asosiy funksiyasi nima?",
+          options: [
+            "Kiruvchi va chiquvchi tarmoq trafigini nazorat qilish va filtrlash",
+            "Zararli fayllarni disklardan butunlay o'chirish",
+            "Ma'lumotlarni zaxira nusxalash (Backup)",
+            "Parollarni xavfsiz saqlash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Ko'p faktorli autentifikatsiya (MFA) deganda nima tushuniladi?",
+          options: [
+            "Tizimga kirish uchun foydalanuvchidan ikki yoki undan ortiq mustaqil dalillarni talab qilish",
+            "Faqat bitta kuchli paroldan foydalanish",
+            "Bir nechta foydalanuvchining bitta akkauntdan foydalanishi",
+            "Parolni har kuni yangilab turish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "OWASP Top 10 ro'yxatiga ko'ra, ma'lumotlar bazasiga zararli so'rovlar yuborish orqali amalga oshiriladigan hujum turi qanday nomlanadi?",
+          options: [
+            "SQL Injection",
+            "Cross-Site Scripting (XSS)",
+            "Phishing",
+            "Denial of Service (DoS)",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "VPN (Virtual Private Network) texnologiyasining kiberxavfsizlikdagi asosiy roli nimadan iborat?",
+          options: [
+            "Tarmoq trafigini shifrlash va xavfsiz tunnel orqali uzatish",
+            "Antivirus bazalarini avtomatik yangilash",
+            "Ma'lumotlar bazasini optimallashtirish",
+            "Kompyuterni fizik himoyalash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "O'zini nusxalash xususiyatiga ega bo'lmagan, lekin foydali dastur niqobi ostida tizimga kirib, zarar yetkazuvchi dastur qanday ataladi?",
+          options: [
+            "Trojan (Troya otining dasturi)",
+            "Kompyuter virusi",
+            "Tarmoq qurti (Worm)",
+            "Keylogger",
+          ],
+          correct: 0,
+        },
+        {
+          question: '"Whaling" hujumi fishingning qaysi turiga kiradi?',
+          options: [
+            "Yuqori lavozimli rahbarlar va top-menejerlarga qaratilgan fishing hujumi",
+            "Faqat baliqchilik kompaniyalariga hujum",
+            "Telefon orqali amalga oshiriladigan vishing hujumi",
+            "Tasodifiy ommaviy xabarlar yuborish",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Metasploit Framework nima uchun ishlatiladi?",
+          options: [
+            "Tizim zaifliklarini test qilish (pentesting) va eksploit qilish uchun",
+            "Operatsion tizimni yangilash uchun",
+            "Grafik dizaynlarni chizish va tahrirlash uchun",
+            "Ma'lumotlar bazasini zaxiralash uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            '"Perfect Forward Secrecy" (PFS) xususiyati nimani ta\'minlaydi?',
+          options: [
+            "Kelajakdagi sessiyalar kalitlari uzoq muddatli kalit o'g'irlanganda ham shifri buzilmasligini",
+            "Parolning esdan chiqmasligini va avtomatik yangilanishini",
+            "Ma'lumotlarning faqat kelajakka qarab shifrlanishini",
+            "Faqat bir marta ishlatiladigan parollarni",
+          ],
+          correct: 0,
+        },
+        {
+          question: 'DDoS hujumlarining "Reflection" turi qanday ishlaydi?',
+          options: [
+            "Hujumchi soxtalashtirilgan IP manzildan uchinchi serverlarga so'rov yuborib, javobni qurbonga yo'naltiradi",
+            "Faqat mahalliy tarmoqdagi kompyuterlarga ta'sir qiladi",
+            "Foydalanuvchining ekranini serverga aks ettiradi",
+            "Parollarni qayta-qayta kiritish orqali amalga oshadi",
+          ],
+          correct: 0,
+        },
+        {
+          question: '"Rainbow Table" nima uchun qo\'llaniladi?',
+          options: [
+            "Parollarning xesh qiymatlarini tezkor teskari qidirish (parol buzish) uchun",
+            "Ekran ranglarini sozlash uchun",
+            "Tarmoq tezligini oshirish uchun",
+            "Simsiz tarmoqlarni bloklash uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question: '"Sandboxing" texnologiyasi nima?',
+          options: [
+            "Shubhali dasturlarni tizimdan ajratilgan xavfsiz (izolyatsiyalangan) muhitda sinab ko'rish",
+            "Ma'lumotlarni qumga ko'mib saqlash usuli",
+            "Faqat antivirus dasturlarini yangilash",
+            "Server xonalarini sovutish tizimi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "BYOD xavfsizlik choralaridan biri MDM (Mobile Device Management) nima vazifani bajaradi?",
+          options: [
+            "Mobil qurilmalarni masofadan boshqarish va xavfsizlik siyosatlarini o'rnatish",
+            "Telefon batareyasini tejash",
+            "Yangi SIM-kartalarni ro'yxatdan o'tkazish",
+            "Internet tezligini cheklash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            '"Information Literacy" (Axborot savodxonligi) kiberxavfsizlikda nima uchun muhim?',
+          options: [
+            "Foydalanuvchilar ijtimoiy muhandislik va fishing hujumlarini taniy olishi va kiberxavflarni kamaytirishi uchun",
+            "Dasturlash kodlarini tezroq yozish uchun",
+            "Kompyuterning qattiq diskini tozalash uchun",
+            "Tarmoq qurilmalarini oson ulash uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question: '"Steganalysis" (steganotahlil) ning maqsadi nima?',
+          options: [
+            "Boshqa fayllar (masalan, rasmlar) ichiga yashirilgan maxfiy ma'lumotlarni aniqlash va ochish",
+            "Xesh funksiyalarni solishtirish",
+            "Parollarni kombinatsiyalash",
+            "SQL so'rovlarini tahrirlash",
+          ],
+          correct: 0,
+        },
+        {
+          question: '"3-2-1" zaxira qoidasi nimani anglatadi?',
+          options: [
+            "Ma'lumotning 3 ta nusxasi, 2 xil tashuvchi vositada, 1 ta nusxa masofada (boshqa binoda) bo'lishi",
+            "3 ta parol, 2 ta foydalanuvchi, 1 ta admin bo'lishi",
+            "Har 3 soatda, 2 marta nusxa olish qoidasi",
+            "Har uchinchi foydalanuvchini bloklash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            'Axborot xavfsizligida "Konfidentsiallik" (Maxfiylik) nima degani?',
+          options: [
+            "Ma'lumotlarning faqat ruxsat berilgan shaxslargagina ochiq bo'lishini ta'minlash",
+            "Ma'lumotning har doim va hamma uchun ochiq bo'lishi",
+            "Ma'lumotlarning o'zgartirilmasligi yoki yaxlitligi",
+            "Internet tarmog'ining barqarorligi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Quyidagilardan qaysi biri eng kuchli (xavfsiz) parol hisoblanadi?",
+          options: ["K1b@rxavf_2026!", "Admin123", "password", "Qwertytrewq"],
+          correct: 0,
+        },
+        {
+          question:
+            "Kompyuterni zararli dasturlardan himoya qilish uchun qanday dasturiy ta'minot o'rnatilishi kerak?",
+          options: [
+            "Antivirus dasturi",
+            "Matn muharriri",
+            "Ma'lumotlar bazasi",
+            "Video pleer",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Fishing (Phishing) hujumi nima?",
+          options: [
+            "Foydalanuvchilarni aldash (soxta xatlar/saytlar yordamida) orqali parollar yoki kredit karta ma'lumotlarini o'g'irlash",
+            "Tarmoq kabelini uzib qo'yish",
+            "Ma'lumotlar bazasini tezkor zaxiralash",
+            "Operatsion tizimni yangilash",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Ma'lumotlarni zaxira nusxalash (Backup) nima uchun kerak?",
+          options: [
+            "Tizim buzilishi, zararli dasturlar yoki tasodifiy o'chib ketish holatlarida ma'lumotlarni qayta tiklash uchun",
+            "Internet tezligini tejash uchun",
+            "Shifrlashni avtomatik bekor qilish uchun",
+            "Monitor ekran rangini sozlash uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Quyidagilardan qaysi biri axborotni jismoniy (fizik) himoyalashga misol bo'ladi?",
+          options: [
+            "Server xonasiga temir eshik va qulflar o'rnatish, biometrik nazorat qo'yish",
+            "Parollarni murakkablashtirish",
+            "Antivirus dasturini o'rnatish",
+            "HTTPS protokolini faollashtirish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Smartfonni barmoq izi yordamida ochish autentifikatsiyaning qaysi turiga kiradi?",
+          options: [
+            "Biometrik autentifikatsiya",
+            "Parolga asoslangan autentifikatsiya",
+            "Tokenli autentifikatsiya",
+            "Mantiqiy autentifikatsiya",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Jamoat joylaridagi (masalan, park yoki kafedagi) ochiq Wi-Fi tarmoqlarida nima qilish xavfli?",
+          options: [
+            "Shaxsiy kabinet, bank ilovalari va maxfiy ma'lumotlar almashiladigan saytlarga kirish",
+            "Ob-havo ma'lumotlarini tekshirish",
+            "Ommaviy yangiliklarni o'qish",
+            "Youtubeda ochiq videolarni ko'rish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            'Eng qadimgi shifrlash usullaridan biri bo\'lgan "Sezar shifri" qanday ishlagan?',
+          options: [
+            "Matndagi har bir harfni alifboda ma'lum bir qadamga (surish) surish orqali",
+            "Harflarni teskari tartibda yozish orqali",
+            "Matnni matematik matritsalarga ko'paytirish orqali",
+            "Maxsus kimyoviy siyohlar yordamida",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Faylni \"Savat\" (Recycle Bin) ga tashlab, uni tozalash ma'lumotni diskdan butunlay o'chib ketganini anglatadimi?",
+          options: [
+            "Yo'q, chunki operatsion tizim faqat fayl yo'riqnomasini o'chiradi, maxsus dasturlar bilan ma'lumotni tiklash mumkin",
+            "Ha, ma'lumot disk jismoniy qismidan butunlay o'chadi",
+            "Faqat Windows tizimidagina butunlay o'chadi",
+            "Ha, fayl hajmi darhol nolga tenglashadi",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberhujum (Cyberattack) nima?",
+          options: [
+            "Kompyuter tizimlari, tarmoqlari yoki infratuzilmasiga ularni buzish, ma'lumot o'g'irlash yoki zarar yetkazish maqsadidagi qasddan qilingan harakat",
+            "Kompyuterni tokdan uzib qo'yish",
+            "Operatsion tizim xatoliklarini dasturchi tomonidan tuzatish",
+            "Antivirusning yeni versiyasini yuklab olish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            'Kiberxavfsizlikda "Ijtimoiy muhandislik" (Social Engineering) nima?',
+          options: [
+            "Inson psixologiyasini manipulyatsiya qilish orqali ularni maxfiy ma'lumotlarni berishga yoki xavfsizlik qoidalarini buzishga majburlash",
+            "Dasturiy ta'minot arxitekturasini chizish bosqichi",
+            "Tarmoq kabellarini bino bo'ylab to'g'ri rejalashtirish",
+            "Ijtimoiy tarmoq sahifalarini professional sozlash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Qadimgi dunyoda maxfiy xabarlarni yozish va yashirish bilan shug'ullangan fan nomi nima?",
+          options: [
+            "Kriptografiya va Steganografiya",
+            "Arxeologiya",
+            "Biometriya",
+            "Paleontologiya",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Wi-Fi tarmog'iga ulanishda begonalardan himoyalanishning eng oddiy usuli nima?",
+          options: [
+            "WPA2/WPA3 protokollaridan foydalanib murakkab parol o'rnatish",
+            "Wi-Fi nomini o'chirib qo'ymaslik",
+            "Tarmoqni parolsiz ochiq qoldirish",
+            "Router quvvatini kamaytirish",
+          ],
+          correct: 0,
+        },
+        {
+          question: '"Spyware" (Shpion dastur) ning asosiy vazifasi nima?',
+          options: [
+            "Foydalanuvchining ruxsatisiz uning harakatlarini kuzatish, parollar va shaxsiy ma'lumotlarni yig'ish",
+            "Kompyuterni viruslardan mukammal tozalash",
+            "Internet tezligini maksimal darajada oshirish",
+            "Fayllarni bulutli serverlarga zaxiralash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Nima uchun barcha saytlarda bir xil paroldan foydalanish xavfli?",
+          options: [
+            "Chunki bitta sayt buzilsa, xaker o'sha parol bilan foydalanuvchining barcha boshqa akkauntlariga kirishi mumkin",
+            "Bu kompyuterning ishlash tezligini sekinlashtiradi",
+            "Parolning esdan chiqib ketish ehtimoli ortadi",
+            "Sayt drayverlariga zarar yetadi",
+          ],
+          correct: 0,
+        },
+        {
+          question: 'Kompyuter "virusi" nima?',
+          options: [
+            "O'z-o'zidan nusxa ko'chirib, boshqa dasturlar ichiga o'z kodini joylashtiruvchi va tizimga zarar yetkazuvchi dastur",
+            "Kompyuter apparat qismining qizib ketishi",
+            "Monitor ekranidagi dog'lar",
+            "Internet brauzerining kesh fayllari",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            'Tashkilotning axborot xavfsizligi bo\'yicha "Xavfsizlik siyosati" (Security Policy) nima?',
+          options: [
+            "Tashkilot aktivlarini himoya qilish uchun qoidalar, tartiblar va cheklovlarni belgilovchi rasmiy yo'riqnomalar to'plami",
+            "Antivirus sotib olish shartnomasi",
+            "Faqat administratorlar ish tartibi jadvali",
+            "Xodimlarning maoshlari ro'yxati",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            'Asimmetrik shifrlashda "Maxfiy kalit" (Private Key) nima uchun ishlatiladi?',
+          options: [
+            "Ochiq kalit bilan shifrlangan ma'lumotlarni deshifrlash (ochish) va raqamli imzo qo'yish uchun",
+            "Ma'lumotlarni ommaga e'lon qilish uchun",
+            "Tarmoq tezligini nazorat qilish uchun",
+            "Faqat rasmlarni shifrlash uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Bell-LaPadula modeli asosan axborot xavfsizligining qaysi tamoyiliga yo'naltirilgan?",
+          options: [
+            "Konfidentsiallik (Maxfiylik) — No read up, no write down qoidasi",
+            "Yaxlitlik (Integrity)",
+            "Foydalanuvchanlik (Availability)",
+            "Autentifikatsiya",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            'Kiberxavfsizlikda "Risk" (Xavf-xatar) deganda nima tushuniladi?',
+          options: [
+            "Zaiflikdan foydalangan holda tahdidning amalga oshishi va tashkilotga zarar yetkazish ehtimoli",
+            "Kompyuterning tasodifan o'chib qolishi",
+            "Parolning esdan chiqishi",
+            "Internet liniyasidagi texnik nosozlik",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            'Windows serverlarida "Active Directory" (AD) xizmatining asosiy vazifasi nima?',
+          options: [
+            "Tarmoqdagi resurslar, kompyuterlar va foydalanuvchi qayd yozuvlarini markazlashgan holda boshqarish",
+            "Faqat multimedia fayllarini saqlash",
+            "Elektron pochta xabarlarini filtrlash",
+            "Veb-saytlarni xosting qilish",
+          ],
+          correct: 0,
+        },
+        {
+          question: '"Brandmauer" (Firewall) qayerda o\'rnatiladi?',
+          options: [
+            "Lokal tarmoq bilan tashqi tarmoq (Internet) o'rtasidagi chegarada yoki operatsion tizim darajasida",
+            "Faqat ma'lumotlar bazasi ichida",
+            "Elektr ta'minoti blokida",
+            "Faqat kompyuter sichqonchasida",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            '"Almashtirish shifri" (Substitution cipher) ning ishlash prinsipi qanday?',
+          options: [
+            "Matndagi har bir harf yoki harflar guruhini ma'lum qoida bo'yicha boshqa simvollarga almashtirish",
+            "Harflarning faqat o'rnini o'zgartirish (transpozitsiya)",
+            "Matnni butunlay teskari yozish",
+            "Bo'shliqlarni o'chirib tashlash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            '"Parol menejerlari" (Password Managers) dasturlarining foydasi nima?',
+          options: [
+            "Murakkab parollarni yaratish, ularni shifrlangan omborda xavfsiz saqlash va avtomatik kiritish",
+            "Parollarni ommaviy saytlarga tarqatish",
+            "Internet tezligini optimallashtirish",
+            "Barcha parollarni bitta matnli faylga yozib qo'yish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            '"Ruxsatlar ro\'yxati" (ACL - Access Control List) nima uchun ishlatiladi?',
+          options: [
+            "Foydalanuvchilar yoki tizimlarning resurslarga, ob'ektlarga kirish huquqlarini belgilash uchun",
+            "Monitor ekran ranglarini sozlash uchun",
+            "Yangi parollar kombinatsiyasini generatsiya qilish uchun",
+            "Barcha tarmoqlarni bloklash uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Sezar shifri qaysi guruhga mansub?",
+          options: [
+            "Monoalfavitli almashtirish shifrlari (Substitution ciphers)",
+            "Polialfavitli shifrlar",
+            "Asimmetrik kriptotizimlar",
+            "Blokli zamonaviy shifrlash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Qadimgi Yunonistonda ishlatilgan 'Skitala' (Scytale) qurilmasi qanday ishlagan?",
+          options: [
+            "Matnni maxsus diametrdagi tayoqchaga o'ralgan lenta yordamida shifrlagan (Transpozitsiya)",
+            "Har bir harfni alifbo bo'yicha ma'lum qadamga surgan",
+            "Maxsus kimyoviy siyohlardan foydalangan",
+            "Raqamli kalitlar yordamida shifrlagan",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Simmetrik shifrlashning asosiy sharti nima?",
+          options: [
+            "Shifrlash va deshifrlash (ochish) uchun bitta (bir xil) maxfiy kalitdan foydalanish",
+            "Ikki xil kalitdan foydalanish",
+            "Faqat ochiq kalitdan foydalanish",
+            "Hech qanday kalit ishlatmaslik",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Asimmetrik kriptotizimlarda (masalan, RSA) yopiq kalit (private key) nima uchun ishlatiladi?",
+          options: [
+            "Ma'lumotni deshifrlash (ochish) va raqamli imzo qo'yish (yaratish) uchun",
+            "Ma'lumotni hamma uchun ochiq shifrlash uchun",
+            "Faqat parollarni tekshirish uchun",
+            "Router xavfsizligini ta'minlash uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Ma'lumotlar yaxlitligi (Integrity) tushunchasi nimani anglatadi?",
+          options: [
+            "Ma'lumotlarning ruxsatsiz o'zgartirilmaganligi, aniq, butun va to'g'ri saqlanganligi",
+            "Ma'lumotlarning hammadan yashirinligi",
+            "Ma'lumotlardan istalgan vaqtda foydalanish imkoniyati",
+            "Fayllarning hajmi kichraytirilishi",
+          ],
+          correct: 0,
+        },
+        {
+          question: "RAID 0 texnologiyasining asosiy kamchiligi nimada?",
+          options: [
+            "Hech qanday nosozlikka chidamlilik yo'q, bitta disk buzilsa hamma ma'lumot yo'qoladi",
+            "Ma'lumotni juda sekin yozadi",
+            "Juda ko'p disk talab qiladi",
+            "Faqat Linux tizimida ishlaydi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Foydalanuvchi tizimga kirishda o'ziga tegishli ekanligini isbotlashi (masalan, parol orqali) nima deyiladi?",
+          options: [
+            "Autentifikatsiya",
+            "Identifikatsiya",
+            "Avtorizatsiya",
+            "Audit",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Simsiz tarmoqlarda (Wi-Fi) WPA2 va WPA3 o'rtasidagi asosiy farq nima?",
+          options: [
+            "WPA3 kuchliroq shifrlash (SAE protokoli) taqdim etadi va Brute-force hujumlaridan yaxshiroq himoyalaydi",
+            "WPA2 simli tarmoqlar uchun mo'ljallangan",
+            "WPA3 faqat parolsiz ochiq zonalarda ishlaydi",
+            "Ular o'rtasida farq yo'q",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberjinoyatchilikda 'Razvedka hujumi' (Reconnaissance) ning maqsadi nima?",
+          options: [
+            "Nishon tizim haqida ma'lumot yig'ish, tarmoq xaritasi va zaifliklarni aniqlash",
+            "Tizimdagi barcha ma'lumotlarni o'chirish",
+            "Serverlarni elektr ta'minotidan uzish",
+            "Sayt drayverlarini yangilash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "RMIS (Risk Management Information Systems) nima uchun qo'llaniladi?",
+          options: [
+            "Tashkilotdagi risklarni boshqarish, tahlil qilish va hisobotlarni markazlashtirish uchun",
+            "Faqat parollarni avtomatik o'zgartirish uchun",
+            "Tarmoq kabellarini nazorat qilish uchun",
+            "Kompyuter ekran ranglarini sozlash uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Vijiner jadvali (Vigenere square) yordamida shifrlash qaysi turga kiradi?",
+          options: [
+            "Polialfavitli almashtirish shifri",
+            "Monoalfavitli almashtirish shifri",
+            "Asimmetrik kriptotizim",
+            "Blokli zamonaviy shifrlash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Windows operatsion tizimida parol siyosatini (Password Policy) qaysi vosita orqali sozlash mumkin?",
+          options: [
+            "Local Security Policy (secpol.msc) yoki Group Policy",
+            "Task Manager",
+            "Control Panel - Mouse Settings",
+            "Disk Management",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Veb-saytlaridagi SQL Injection zaifligi nimaga olib keladi?",
+          options: [
+            "Hujumchining ma'lumotlar bazasiga zararli so'rovlar yuborishi va ma'lumotlarni o'g'irlashiga",
+            "Server apparat qismining yonib ketishiga",
+            "Domen nomining o'g'irlanishiga",
+            "Veb-sayt dizaynining o'zgarishiga",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Ma'lumotlarni xavfsiz o'chirish (Wiping) nima?",
+          options: [
+            "Ma'lumotlar ustidan tasodifiy bitlarni qayta-qayta yozib, qayta tiklab bo'lmaydigan holatga keltirish",
+            "Faylni shunchaki Savat (Recycle bin) ga tashlash",
+            "Fayl nomini o'zgartirish",
+            "Faylni arxiv ichiga yashirish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Ochiq kalitli kriptotizimlarda raqamli imzo qanday yaratiladi?",
+          options: [
+            "Jo'natuvchining maxfiy kaliti (Private Key) yordamida xabar xeshini shifrlash orqali",
+            "Ochiq kalit yordamida xabarni oddiy yozish orqali",
+            "Parol menejeri yordamida",
+            "Xonaga kirish kodi orqali",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Disklarni shifrlash uchun ishlatiladigan AES algoritmi qaysi turga kiradi?",
+          options: [
+            "Simmetrik blokli shifrlash",
+            "Asimmetrik shifrlash",
+            "Xesh-funksiya",
+            "Polialfavitli almashtirish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Atbash shifri kriptografiya tarixida qaysi xalqqa tegishli deb hisoblanadi?",
+          options: [
+            "Qadimgi Yahudiy (Ibroniy) xalqiga",
+            "Qadimgi Rimliklarga",
+            "Misrliklarga",
+            "Yunonlarga",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Ko'p satxli xavfsizlik modeli (Multilevel Security) asosan qayerda qo'llaniladi?",
+          options: [
+            "Harbiy, davlat va yuqori maxfiylikka ega davlat tashkilotlarida",
+            "Oddiy internet kafelarda",
+            "Uydagi lokal tarmoqlarda",
+            "Kompyuter o'yinlarida",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Foydalanuvchanlik (Availability) ko'rsatkichini pasaytiruvchi hujum turi?",
+          options: ["DoS / DDoS hujumlari", "SQL Injection", "XSS", "Phishing"],
+          correct: 0,
+        },
+        {
+          question: "MD5 va SHA-256 algoritmlari nima maqsadda ishlatiladi?",
+          options: [
+            "Ma'lumotlar yaxlitligini tekshirish va xesh qiymat olish uchun",
+            "Fayllarni siqish (arxivlash) uchun",
+            "Internet tezligini oshirish uchun",
+            "Kompyuter drayverlarini yangilash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "XSS (Cross-Site Scripting) hujumi qaysi resursga qaratilgan bo'ladi?",
+          options: [
+            "Foydalanuvchi brauzerida zararli skriptlarni (JavaScript) ishga tushirishga",
+            "Ma'lumotlar bazasini butunlay o'chirishga",
+            "Server apparat qismini kuydirishga",
+            "Router parolini o'g'irlashga",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Windows OTda 'BitLocker' funksiyasi nima uchun xizmat qiladi?",
+          options: [
+            "Disklarni to'liq shifrlash va ma'lumotlarni jismoniy o'g'irlanishdan himoyalash uchun",
+            "Windows Media Player drayverini yangilash uchun",
+            "Rasmlarni tahrirlash uchun",
+            "Kalkulyator xavfsizligini ta'minlash uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Xavfsizlik siyosatida 'Least Privilege' (Eng kam imtiyoz) tamoyili nimani anglatadi?",
+          options: [
+            "Foydalanuvchiga faqat uning ish vazifasi uchun zarur bo'lgan minimal huquqlarni berish",
+            "Hamma foydalanuvchilarga administrator huquqini berish",
+            "Parollarni imkon qadar qisqa qilish",
+            "Hech kimga tizimga kirishga ruxsat bermaslik",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Tarmoq xavfsizligida 'Intrusion Detection System' (IDS) nima qiladi?",
+          options: [
+            "Tarmoq trafigini kuzatadi va shubhali/zararli harakatlarni aniqlab signal beradi",
+            "Virusli fayllarni avtomatik o'chiradi",
+            "Parollarni generatsiya qiladi",
+            "Internet provayder bilan aloqa o'rnatadi",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberxavfsizlikda 'Zero-day vulnerability' nima?",
+          options: [
+            "Dastur ishlab chiquvchisi hali bilmagan va tuzatish (patch) chiqarilmagan zaiflik",
+            "0 kunda yaratilgan mukammal antivirus",
+            "Hech qanday xavf tug'dirmaydigan xatolik",
+            "Yilning birinchi kunidagi kiberhujum",
+          ],
+          correct: 0,
+        },
+        {
+          question: "'HoneyPot' texnologiyasining maqsadi?",
+          options: [
+            "Hujumchilarni chalg'itish va ularning usullarini o'rganish uchun ataylab ochiq qo'yilgan tuzoq-tizim",
+            "Antivirus bazalarini saqlash joyi",
+            "Yuqori tezlikdagi server drayveri",
+            "Ma'lumotlarni shifrlash algoritmi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kriptografiya tarixida 'Enigma' mashinasi qaysi davrda mashhur bo'lgan?",
+          options: [
+            "Ikkinchi jahon urushi davrida (Germaniya tomonidan)",
+            "Qadimgi Rim davrida",
+            "XIX asr boshlarida",
+            "Internet yaratilgan dastlabki yillarda",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "'Ransomware' (Tovlamachi-virus) hujumining asosiy maqsadi?",
+          options: [
+            "Tizimdagi fayllarni shifrlab, ularni ochish evaziga pul (tovlamachilik) talab qilish",
+            "Faqat kompyuter ekranini o'chirish",
+            "Yangi foydalanuvchilar yaratish",
+            "Internet trafigini bepul qilish",
+          ],
+          correct: 0,
+        },
+        {
+          question: "HTTPS protokoli HTTPdan nimasi bilan farq qiladi?",
+          options: [
+            "Ma'lumotlarni SSL/TLS yordamida shifrlangan xavfsiz kanallar orqali uzatadi",
+            "Faqat rasmlarni tezroq yuklaydi",
+            "Hech qanday farqi yo'q",
+            "Faqat qidiruv tizimlarida ishlaydi",
+          ],
+          correct: 0,
+        },
+        {
+          question: "'Brute-force' hujumi nima?",
+          options: [
+            "Mumkin bo'lgan barcha kombinatsiyalarni (parollarni) ketma-ket sinab ko'rish orqali buzib kirish",
+            "Server xonasiga jismoniy hujum qilish",
+            "Foydalanuvchiga fishing xatlari yuborish",
+            "Sifatsiz kabellar orqali tarmoqni sekinlashtirish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            'Windows OTda "UAC" (User Account Control) nima uchun kerak?',
+          options: [
+            "Tizimga ruxsatsiz ma'muriy o'zgartirishlar kiritilishining oldini olish va tasdiqlash so'rash",
+            "Internetga ulanishni ta'minlash uchun",
+            "Videolarni yuqori sifatda ko'rish uchun",
+            "Shifrlangan fayllarni ochish uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question: '"Malware" atamasi nimani anglatadi?',
+          options: [
+            "Zararli dasturiy ta'minot (Malicious Software) tushunchasining umumiy nomi",
+            "Ma'lumotlar bazasi boshqaruv tizimi",
+            "Antivirus dasturi turi",
+            "Kompyuter apparat qismi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "RSA algoritmining xavfsizligi qaysi matematik muammoning murakkabligiga asoslangan?",
+          options: [
+            "Katta tub sonlarning ko'paytmasini ko'paytuvchilarga ajratish (faktoring) muammosiga",
+            "Elliptik egri chiziqlar ustidagi amallarga",
+            "Chiziqli tenglamalar sistemasini yechishga",
+            "Matritsalarni determinatlashga",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "CSRF (Cross-Site Request Forgery) hujumining asosiy maqsadi nima?",
+          options: [
+            "Foydalanuvchi nomidan uning ruxsatisiz autentifikatsiyadan o'tgan sessiyada soxta amallarni bajarish",
+            "Serverning parollar bazasini o'g'irlash",
+            "Tarmoq kartasining MAC manzilini o'zgartirish",
+            "Foydalanuvchi brauzeriga virus yuqtirish",
+          ],
+          correct: 0,
+        },
+        {
+          question: "3DES (Triple DES) algoritmi DES dan qanday farq qiladi?",
+          options: [
+            "DES algoritmini ketma-ket uch marta turli kalitlar bilan qo'llaydi va xavfsizlikni oshiradi",
+            "Faqat uchta foydalanuvchi uchun mo'ljallangan",
+            "Uchta turli xil xesh-funksiyadan foydalanadi",
+            "Faqat rasmlarni shifrlaydi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            'Kriptografiyada "nonce" (number once) tushunchasi nima uchun ishlatiladi?',
+          options: [
+            "Hujumlarni (masalan, replay attack) oldini olish uchun faqat bir marta ishlatiladigan tasodifiy son",
+            "Shifrlangan ma'lumotning umumiy hajmi",
+            "Faqat administrator kirishi mumkin bo'lgan kalit",
+            "Xatolarni tuzatuvchi kod turi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            '"Zero Trust" (Nolinchi ishonch) arxitekturasining asosiy g\'oyasi nima?',
+          options: [
+            "Hech qachon ishonma, har doim tekshir (tashqi va ichki foydalanuvchilar doim qayta tekshiriladi)",
+            "Barcha parollarni o'chirib tashlash",
+            "Faqat tashqi foydalanuvchilarni bloklash",
+            "Antiviruslardan butunlay voz kechish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            '"Cold Site" va "Hot Site" tushunchalari falokatdan tiklanishda nimani anglatadi?',
+          options: [
+            "Hot Site — to'liq jihozlangan va tezkor ishga tushadigan markaz, Cold Site — faqat bino va infratuzilma",
+            "Hot Site — faqat veb-sayt, Cold Site — faqat ma'lumotlar ombori",
+            "Hot Site — virusli sayt, Cold Site — xavfsiz sayt",
+            "Ular o'rtasida farq yo'q",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Steganografiyada LSB (Least Significant Bit) usuli qanday ishlaydi?",
+          options: [
+            "Piksel ranglarining eng kichik bitlarini maxfiy ma'lumot bitlariga almashtirish orqali",
+            "Faqat fayl nomini o'zgartirish orqali yashirish",
+            "Ma'lumotni bir necha marta shifrlash",
+            "Faylni arxiv ichiga yashirish",
+          ],
+          correct: 0,
+        },
+        {
+          question: '"Air-Gapped" kompyuter nima?',
+          options: [
+            "Hech qanday tarmoqqa (na internetga, na lokal tarmoqqa) ulanmagan, jismoniy ajratilgan kompyuter",
+            "Havo orqali sovutiladigan server",
+            "Kosmik stansiyalarda ishlatiladigan qurilma",
+            "Simsiz ishlaydigan noutbuk",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "DNS cache poisoning (DNS keshini zaharlash) hujumi natijasida nima sodir bo'ladi?",
+          options: [
+            "Foydalanuvchilar qonuniy domen nomini kiritganda xakerning soxta saytiga yo'naltiriladi",
+            "DNS serverning barcha ma'lumotlari o'chib ketadi",
+            "Foydalanuvchining paroli o'zgaradi",
+            "Internet butunlay o'chadi",
+          ],
+          correct: 0,
+        },
+        {
+          question: 'Wi-Fi tarmog\'ida "Evil Twin" hujumi nima?',
+          options: [
+            "Qonuniy tarmoq nomini (SSID) soxtalashtirib yaratilgan zararli kirish nuqtasi (tuzoq router)",
+            "Ikki xil routerdan bir vaqtda foydalanish",
+            "Wi-Fi signalini kuchaytiruvchi qurilma",
+            "Parolni qo'shni akkauntdan o'g'irlash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            'Hash-funksiyalarning "One-way property" (Bir tomonlamalik) xususiyati nimani anglatadi?',
+          options: [
+            "Xesh qiymatdan foydalanib boshlang'ich matnni (kirish ma'lumotini) qayta tiklashning imkonsizligi",
+            "Xesh-funksiyaning faqat bir xil uzunlikdagi natija berishi",
+            "Faqat bitta kompyuterda ishlashi",
+            "Ma'lumotni shifrlab bo'lmasligi",
+          ],
+          correct: 0,
+        },
+        {
+          question: '"Fuzzing" testi nima?',
+          options: [
+            "Dasturdagi zaifliklarni topish uchun unga avtomatik tarzda noto'g'ri yoki tasodifiy ma'lumotlarni kiritish",
+            "Dasturning grafik interfeysini o'zgartirish",
+            "Dasturning faqat drayverlarini yangilash",
+            "Dastur kodini o'chirib tashlash",
+          ],
+          correct: 0,
+        },
+        {
+          question: '"Malvertising" nima?',
+          options: [
+            "Onlayn reklamalar ichiga zararli kodlarni joylashtirish orqali virus tarqatish usuli",
+            "Antivirus dasturlari reklamasi",
+            "Noto'g'ri yozilgan marketing kodi",
+            "Elektron pochta spam filtri",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            '"Cold Boot Attack" amalga oshirilganda RAM (Tezkor xotira)dan qanday ma\'lumotlarni olish mumkin?',
+          options: [
+            "Kompyuter o'chirilgandan so'ng xotiradan to'liq o'chmagan shifrlash kalitlari va parollarni",
+            "Faqat o'chirilgan rasmlarni",
+            "Hard disk hajmini va modelini",
+            "Protsessor kesh xotirasi hajmini",
+          ],
+          correct: 0,
+        },
+        {
+          question: '"Botmaster" kiberxavfsizlikda kim?',
+          options: [
+            "Zararlangan kompyuterlar tarmog'ini (Botnet) masofadan boshqaruvchi kiberjinoyatchi",
+            "Antivirus kompaniyasi rahbari",
+            "Tarmoq xavfsizligi administratori",
+            "Yangi kompyuter yaratuvchi muhandis",
+          ],
+          correct: 0,
+        },
+        {
+          question: '"Logic Bomb" (Mantiqiy bomba) nima?',
+          options: [
+            "Tizimda ma'lum bir shart bajarilganda (masalan, muayyan sana kelganda) ishga tushadigan zararli kod",
+            "Fizik portlovchi qurilma",
+            "Kompyuterni tezlashtiruvchi skript",
+            "Parollarni saqlash ombori",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberxavfsizlikda 'Inson omili' qanday xavf tug'diradi?",
+          options: [
+            "Foydalanuvchilarning beparvoligi yoki aldanishi (ijtimoiy muhandislik) tufayli tizim xavfsizligiga putur yetishi",
+            "Kompyuter tezligining pasayishi",
+            "Sichqoncha yoki klaviaturaning buzilishi",
+            "Server xonasidagi havo haroratining ko'tarilishi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "'Fake xabarlar' (soxta xabarlar) kiberxavfsizlikda qaysi turdagi xavfga kiradi?",
+          options: [
+            "Ijtimoiy muhandislik va dezinformatsiya (manipulyatsiya) xavfi",
+            "Dasturiy xatoliklar (Bug)",
+            "Tarmoq trafigini to'xtatish hujumi",
+            "Ma'lumotlar bazasining buzilishi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlik strategiyasi (Strategy) va siyosati (Policy) o'rtasidagi farq nima?",
+          options: [
+            "Strategiya — uzoq muddatli maqsadlar va umumiy yo'nalish, Siyosat — aniq qoidalar va cheklovlar to'plami",
+            "Siyosat faqat parollarga tegishli, strategiya esa faqat antivirusga",
+            "Ular o'rtasida hech qanday farq yo'q",
+            "Strategiya davlat qonuni, siyosat esa korxona ichki buyrug'idir",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Ruxsatlarni mantiqiy boshqarish (Logical Access Control) qaysi darajada amalga oshiriladi?",
+          options: [
+            "Dasturiy ta'minot, operatsion tizim va protokollar darajasida",
+            "Fizik to'siqlar va eshik qulflari darajasida",
+            "Faqat elektr energiyasini boshqarish darajasida",
+            "Kabel tarmoqlari darajasida",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlikda 'Risk Assessment' (Riskni baholash) jarayonining birinchi bosqichi nima?",
+          options: [
+            "Tashkilotning barcha aktivlarini (Assets) aniqlash va inventarizatsiya qilish",
+            "Xavfsizlik devorini sotib olish",
+            "Xodimlarni ishdan bo'shatish",
+            "Parollarni majburiy o'zgartirish",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Identifikatsiya usullaridan biri bo'lgan 'token' nima?",
+          options: [
+            "Foydalanuvchi shaxsini tasdiqlash uchun ishlatiladigan apparat yoki dasturiy bir martalik kod generatori",
+            "Oddiy qog'ozdagi imzo",
+            "Kompyuter monitorining maxsus turi",
+            "Ma'lumotlar bazasidagi jadval nomi",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberqonunlar nima uchun muhim?",
+          options: [
+            "Kiberjinoyatchilikni jazolash, elektron tijorat va shaxsiy ma'lumotlarni qonuniy himoya qilish uchun",
+            "Kompyuter komponentlari narxini nazorat qilish uchun",
+            "Dasturlash tillarini tartibga solish uchun",
+            "Internet tezligini chegaralash uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question: "'Keylogger' dasturining vazifasi nima?",
+          options: [
+            "Klaviaturada bosilgan har bir tugmani yashirincha yozib olish va xakerga yuborish",
+            "Monitor ekranini rasmga olish",
+            "Kompyuter parolini avtomatik murakkablashtirish",
+            "O'chib ketgan fayllarni qayta tiklash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "SIM-kartalardagi PIN-kod qaysi turdagi autentifikatsiyaga kiradi?",
+          options: [
+            "Foydalanuvchi biladigan narsa (Knowledge factor)",
+            "Foydalanuvchiga tegishli biometrik omil",
+            "Foydalanuvchi ega bo'lgan jismoniy qurilma",
+            "Tizim avtomatik generatsiya qiladigan omil",
+          ],
+          correct: 0,
+        },
+        {
+          question: "RAID 10 (1+0) massivining afzalligi nimada?",
+          options: [
+            "RAID 1 ning yuqori ishonchliligi (ko'zgulashtirish) va RAID 0 ning yuqori tezligini birlashtiradi",
+            "Faqat bitta disk ishlatishi va xarajatni tejashi",
+            "Ma'lumotlarni shifrlangan holatda saqlashi",
+            "Faqat veb-serverlar uchun mo'ljallanganligi",
+          ],
+          correct: 0,
+        },
+        {
+          question: "'Botnet' nima?",
+          options: [
+            "Xaker tomonidan masofadan boshqariladigan zararli dastur yuqtirilgan kompyuterlar tarmog'i",
+            "Internet qidiruv tizimining roboti",
+            "Telegram botlarini yaratish platformasi",
+            "Xavfsiz mahalliy kompyuter tarmog'i",
+          ],
+          correct: 0,
+        },
+        {
+          question: "'Rootkit' nima?",
+          options: [
+            "Tizimda o'zini va zararli dasturlarni operatsion tizim yadrosidan yashira oladigan virus turi",
+            "Operatsion tizimni yuklovchi dastur",
+            "Ma'lumotlar bazasining asosiy kaliti",
+            "Antivirusning ma'lumotlar bazasi",
+          ],
+          correct: 0,
+        },
+        {
+          question: "SSH (Secure Shell) protokoli nima uchun ishlatiladi?",
+          options: [
+            "Masofadagi kompyuter yoki serverlarni shifrlangan xavfsiz kanal orqali boshqarish uchun",
+            "Veb-saytlarni oddiy ko'rish uchun",
+            "Fayllarni diskdan butunlay o'chirish uchun",
+            "Wi-Fi router parolini buzish uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberxavfsizlikda 'Audit' nima?",
+          options: [
+            "Tashkilotning axborot xavfsizligi tizimini, qoidalarini va choralarini standartlarga muvofiqligini mustaqil tekshirish",
+            "Yangi kompyuterlarni sotib olish jarayoni",
+            "Dastur kodini noldan qayta yozish",
+            "Xodimlarning ishga kelish vaqtini qayd etish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Dasturiy vositalardagi 'Bug' (xatolik) va 'Exploit' o'rtasidagi farq nimada?",
+          options: [
+            "Bug — dasturdagi tasodifiy xatolik, Exploit — ushbu xatolikdan foydalanib hujum uyushtirish vositasi",
+            "Bug xavfli virus, exploit esa uni davolovchi antivirusdir",
+            "Ular o'rtasida farq yo'q, ikkalasi ham kod turi",
+            "Bug faqat Windowsda, exploit esa Linuxda bo'ladi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Foydalanuvchini biometrik identifikatsiyalashda qaysi usul eng yuqori aniqlikka va eng kam xatolikka ega?",
+          options: [
+            "Ko'zning rangdor pardasi (Iris scan) yoki to'r pardasi bo'yicha skanerlash",
+            "Barmoq izini tekshirish",
+            "Yuz tuzilishini aniqlash (Face ID)",
+            "Ovoz tempini tahlil qilish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Ma'lumotlar yo'qolishining (Data Loss) oldini olish uchun eng samarali va fundamental usul qaysi?",
+          options: [
+            "Muntazam ravishda zaxira nusxalarini (Backup) yaratish va ularni alohida joyda saqlash",
+            "Faqat kuchli parollar o'rnatish",
+            "Antivirus dasturini har soatda yangilash",
+            "Kompyuterni internetdan uzib qo'yish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Ma'lumotlarni 'Physical Destruction' (jismoniy yo'q qilish) usuli qachon qo'llaniladi?",
+          options: [
+            "Maxfiy ma'lumotlar saqlangan disklar yaroqsiz holga kelganda yoki utilizatsiya qilinayotganda",
+            "Har safar kompyuter o'chirilganda",
+            "Operatsion tizim yangilanishidan oldin",
+            "Faqat foydalanuvchi parolini esdan chiqarganda",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "'Social Engineering' hujumlaridan himoyalanishning eng samarali va eng birinchi usuli?",
+          options: [
+            "Xodimlarning kiberxavfsizlik bo'yicha savodxonligini va hushyorligini oshirish (Treninglar)",
+            "Eng qimmat xavfsizlik devorini (Firewall) sotib olish",
+            "Barcha elektron pochtalarni taqiqlash",
+            "Kompyuter tizimini har kuni format qilish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlikda 'Asset' (Aktiv) deganda nima tushuniladi?",
+          options: [
+            "Tashkilot uchun qiymatga ega bo'lgan va himoya qilinishi kerak bo'lgan barcha ma'lumotlar, dasturlar, uskunalar va xodimlar",
+            "Faqat tashkilot binosi",
+            "Faqat korxonaning bank hisob raqami",
+            "Faqat kompyuter drayverlari",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlik arxitekturasining asosiy qismi va eng muhim tamoyili nima?",
+          options: [
+            "Ko'p qatlamli mudofaa (Defense in Depth) tizimini shakllantirish",
+            "Faqat bitta kuchli devor o'rnatish",
+            "Faqatgina administrator parolini murakkab qilish",
+            "Faqat bepul antivirusdan foydalanish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Simmetrik shifrlashning eng asosiy mantiqiy kamchiligi (muammosi) nimada?",
+          options: [
+            "Maxfiy kalitni aloqa ishtirokchilariga xavfsiz yetkazib berish (kalitlar taqsimoti muammosi)",
+            "Faqat kichik matnlarni shifrlay olishi",
+            "Internet tarmoqlarida umuman ishlamasligi",
+            "Shifrlash tezligining juda sekinligi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Foydalanuvchanlik (Availability) buzilishi qanday holatda ko'proq yuz beradi?",
+          options: [
+            "Tizim resurslari to'liq bloklanganda, server o'chganda yoki DoS hujumi uyushtirilganda",
+            "Ma'lumotlar ruxsatsiz o'zgartirilganda",
+            "Fayllar oddiy shifrlanganda",
+            "Foydalanuvchi paroli o'g'irlanganda",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "SSL/TLS protokoli veb-brauzer va server o'rtasida nima uchun xizmat qiladi?",
+          options: [
+            "Uzatilayotgan barcha ma'lumotlarni shifrlash va kanal xavfsizligini ta'minlash uchun",
+            "Operatsion tizimni masofadan turib o'rnatish uchun",
+            "Monitor ekran ranglarini masofadan sozlash uchun",
+            "Veb-sahifa dizaynini yuklash uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question: 'Kriptografiyada "Kalit" (Key) nima?',
+          options: [
+            "Shifrlash yoki deshifrlash algoritmining ishini boshqaradigan va natijani belgilaydigan maxfiy parametlar (raqam/matn) ketma-ketligi",
+            "Kompyuterni yoqadigan fizik tugma",
+            "Flashkani kompyuterga ulaydigan joy",
+            "Tizim administratorining ismi-sharifi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "BGP (Border Gateway Protocol) xavfsizligini ta'minlash uchun qaysi zamonaviy texnologiya qo'llaniladi?",
+          options: [
+            "RPKI (Resource Public Key Infrastructure)",
+            "WPA2 Enterprise",
+            "Kerberos protokoli",
+            "Diffi-Xellman shifri",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            'Raqamli sertifikatdagi "Revocation List" (CRL) nima vazifani bajaradi?',
+          options: [
+            "Muddati tugamasdan oldin bekor qilingan (ishonchsiz) raqamli sertifikatlar ro'yxatini saqlaydi",
+            "Yangi parollar ro'yxatini avtomatik shakllantiradi",
+            "Sertifikatlash markazining barcha xodimlari manzillarini saqlaydi",
+            "Faqat IP manzillarni bloklaydi",
+          ],
+          complete: true,
+          correct: 0,
+        },
+        {
+          question:
+            '"SQL Map" dasturi kiberxavfsizlikda qanday maqsadlarda ishlatiladi?',
+          options: [
+            "Veb-saytlarda SQL Injection zaifliklarini avtomatik aniqlash va eksploit qilish (pentest) uchun",
+            "SQL so'rovlarini tahrirlash va optimallashtirish uchun",
+            "Veb-serverni DoS hujumlaridan ishonchli himoya qilish uchun",
+            "Ma'lumotlar bazasini tezkor zaxiralash uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Diffi-Xellman algoritmi elliptik egri chiziqlar (ECC) matematikasi bilan qo'llanilganda qanday nomlanadi?",
+          options: [
+            "ECDH (Elliptic Curve Diffie-Hellman)",
+            "AES-256",
+            "SHA-3",
+            "RSA-Poly",
+          ],
+          correct: 0,
+        },
+        {
+          question: "SOC (Security Operations Center) nima?",
+          options: [
+            "Tashkilot xavfsizligini 24/7 rejimida kuzatuvchi, tahlil qiluvchi va kiberhujumlarga javob beruvchi markaz",
+            "Ijtimoiy tarmoqlarni boshqarish bo'limi",
+            "Dasturiy ta'minotni ishlab chiqish guruhi",
+            "Faqat parollarni saqlash ombori",
+          ],
+          correct: 0,
+        },
+        {
+          question: "TrueCrypt dasturi nima maqsadlar uchun xizmat qiladi?",
+          options: [
+            "Fayllar, papkalar yoki butun boshli disklarni shifrlangan konteyner ichida xavfsiz saqlash uchun",
+            "Tarmoq trafigini tahlil qilish (sniffer) uchun",
+            "SQL so'rovlarini tekshirish uchun",
+            "Kompyuterni viruslardan tozalash uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Gamilton marshrutlariga (graf nazorati) asoslangan shifrlash asosan qaysi guruhga misol bo'la oladi?",
+          options: [
+            "Kriptografik grafik va asimmetrik maxfiy tizimlar kombinatsiyasiga",
+            "Sezar usulidagi oddiy Monoalfavitli shifrlashga",
+            "Simmetrik blokli AES algoritmlariga",
+            "Xesh-funksiyalarning bir turiga",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            '"Logic Bomb" (Mantiqiy bomba) zararli kodlari odatda qaysi tillarda yoki qayerda yoziladi?',
+          options: [
+            "Istalgan dasturlash tilida (C++, Python, skriptlar) yozilib, maqsadli dastur kodi ichiga yashiriladi",
+            "Faqat maxsus ishlab chiqilgan 'Bomba' deb nomlanuvchi tilda",
+            "Faqat HTML va CSS kodlari ichida",
+            "Faqat router drayverlari formatida",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Klassik shifrlash tarixidagi 'Polialfavitli almashtirish' algoritmining eng yorqin misoli qaysi?",
+          options: [
+            "Vijiner (Vigenere) shifri",
+            "Sezar shifri",
+            "Atbash shifri",
+            "Skitala tayoqchasi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlikda 'Razvedka xujumi' (Reconnaissance) o'tkazishning dastlabki bosqichlarida qaysi vositadan ko'p foydalaniladi?",
+          options: [
+            "Nmap port skaneri va Wireshark",
+            "BitLocker disklarni shifrlagichi",
+            "Windows Active Directory",
+            "TrueCrypt parollar ombori",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Ma'lumotlardan foydalanishni mantiqiy boshqarish (Logical Access Control) vositalariga quyidagilardan qaysi biri kiradi?",
+          options: [
+            "Foydalanuvchi huquqlari (Permissions), parollar va ruxsatnomalar",
+            "Xonaga kirish kodi va turniket",
+            "Server xonasidagi temir eshik",
+            "Elektr ta'minoti blokirovkasi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Tashkilotning axborot xavfsizligi xavflarini baholash (Risk Assessment) jarayonining asosiy mohiyati nimada?",
+          options: [
+            "Tahdidlar, zaifliklar va ularning tashkilot aktivlariga ta'sirini tahlil qilib, risk darajasini aniqlash",
+            "Eng oxirgi modeldagi kompyuterlarni sotib olish",
+            "Korxonadagi barcha xodimlarning parolini bir xil qilish",
+            "Faqat tashqi internet tarmoqlarini butunlay uzib qo'yish",
+          ],
+          correct: 0,
+        },
+      ];
+
+      // QOLGAN BARCHA UNIKAL SAVOLLARNI BAZAGA QO'SHISH (DIAPAZONNI TO'LDIRISH)
+      // Matndagi qolgan savollar bazasini massivga to'liq generatsiya qilish:
+      const remainingQuestions = [
+        {
+          question:
+            "Ma'lumotlar yo'qolishining eng ko'p uchraydigan sababi nima?",
+          options: [
+            "Inson omili (beparvolik bilan o'chirish) va apparat qismidagi nosozliklar",
+            "Monitor ekranining to'satdan kuyishi",
+            "Internet provayderining o'zgarishi",
+            "Antivirus dasturlarining eskirishi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlikda 'Access Control List' (ACL) vazifasi nima?",
+          options: [
+            "Tarmoq paketlari yoki foydalanuvchilarning resurslarga kirish/chiqish huquqini qoidalar asosida filtrlash",
+            "Parollarni avtomatik ravishda murakkablashtirish",
+            "Ma'lumotlar bazasini arxivlash",
+            "Shtrix-kodlarni sknerlash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Ma'lumotlarni qayta tiklash (Data Recovery) jarayoni qachon amalga oshiriladi?",
+          options: [
+            "Ma'lumotlar tasodifan o'chib ketganda, disk shikastlanganda yoki virus zarar yetkazganda",
+            "Yangi kompyuter sotib olinganda",
+            "Parol muvaffaqiyatli o'zgartirilganda",
+            "Internet aloqasi uzilganda",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Dasturiy vositalardagi veb-saytlar bilan bog'liq eng keng tarqalgan zaifliklar qaysi ro'yxatda aks etadi?",
+          options: [
+            "OWASP Top 10 ro'yxatida",
+            "Windows drayverlar yangilanishida",
+            "ISO 9001 sertifikatida",
+            "Google qidiruv natijalarida",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Qayd yozuvini himoyalashda (Account Protection) eng muhim chora nima?",
+          options: [
+            "Ikki faktorli autentifikatsiyani yoqish va murakkab paroldan foydalanish",
+            "Akkaunt nomini har kuni o'zgartirish",
+            "Faqat elektron pochtadan voz kechish",
+            "Profil rasmini yashirib qo'yish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "TrueCrypt yordamida shifrlangan virtual disk yaratish kiberxavfsizlikning qaysi tamoyilini ta'minlaydi?",
+          options: [
+            "Konfidentsiallik (Maxfiylik)",
+            "Foydalanuvchanlik (Availability)",
+            "Tarmoq barqarorligi",
+            "Identifikatsiyani soddalashtirish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Vijiner jadvalini (matritsasini) qo'llagan holda shifrlashda kalit so'z qanday rol o'ynaydi?",
+          options: [
+            "Ochiq matn harflari qaysi qadam bo'yicha surilishini davriy ravishda belgilaydi",
+            "Matnni tasodifiy sonlarga almashtiradi",
+            "Faqat birinchi harfni shifrlaydi",
+            "Xesh qiymat hosil qiladi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Operatsion tizimda (Windows OT) parolga asoslangan autentifikatsiya mexanizmini sozlash qayerdan bajariladi?",
+          options: [
+            "Foydalanuvchi qayd yozuvlari (User Accounts) yoki secpol.msc boshqaruvi orqali",
+            "Task Manager orqali",
+            "Device Manager drayverlar bo'limidan",
+            "Internet Explorer sozlamalaridan",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberhujumlar jarayonida 'Razvedka' (Reconnaissance) bosqichi qachon o'tkaziladi?",
+          options: [
+            "Hujum uyushtirishdan oldin nishon haqida maksimal ma'lumot to'plash uchun eng birinchi bosqichda",
+            "Hujum yakunlangandan so'ng izlarni o'chirishda",
+            "Faqat pul talab qilish bosqichida",
+            "Antivirus tizimi ishga tushganda",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Fayllarni xavfsiz saqlashda 'Cloud' (bulutli) saqlashning kiberxavfsizlik nuqtai nazaridan asosiy xavfi nima?",
+          options: [
+            "Uchinchi tomon serverlariga ruxsatsiz kirish va ma'lumotlar sizib chiqish ehtimoli",
+            "Fayllarning hajmi kattalashib ketishi",
+            "Bulutli tizimda parollarni saqlab bo'lmasligi",
+            "Faqat pullik obunaning mavjudligi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Asimmetrik kriptografiyada 'Ochiq kalit' (Public Key) nima uchun hamma bilan baham ko'riladi?",
+          options: [
+            "Istalgan foydalanuvchi ushbu kalit yordamida xabarni faqat egasi o'qiydigan qilib shifrlashi uchun",
+            "Maxfiy kalitni tiklash uchun",
+            "Kompyuterni tarmoqqa ulash uchun",
+            "Parollarni generatsiya qilish uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Dasturiy ta'minotdagi \"Zero-day\" zaiflikka qarshi qanday tezkor chora ko'riladi?",
+          options: [
+            "Ishlab chiquvchi tomonidan zudlik bilan xavfsizlik yangilanishi (Patch) tayyorlanadi va o'rnatiladi",
+            "Kompyuter drayverlari o'chirib tashlanadi",
+            "Sayt dizayni butunlay o'zgartiriladi",
+            "Barcha eski parollar o'chiriladi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Firewall (Tarmoqlararo ekran) ning asosiy ishlash filtri nima qoidalarga asoslanadi?",
+          options: [
+            "IP manzillar, portlar va tarmoq protokollari qoidalariga (Ruleset)",
+            "Faqat kompyuter foydalanuvchisining ismiga",
+            "Fayllarning yaratilgan sanasiga",
+            "Monitor ekran o'lchamiga",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Firewall va Antivirus o'rtasidagi asosiy farq nima?",
+          options: [
+            "Firewall tarmoq trafigini nazorat qiladi, Antivirus esa kompyuter ichidagi zararli fayllarni qidiradi",
+            "Firewall faqat Linuxda, antivirus esa faqat Windowsda ishlaydi",
+            "Ular mutlaqo bir xil vazifani bajaradi",
+            "Firewall faqat apparat qismini himoya qiladi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlik arxitekturasida 'Defense in Depth' (Ko'p qatlamli mudofaa) nima?",
+          options: [
+            "Xavfsizlikni jismoniy, tarmoq, dasturiy va tashkiliy darajadagi bir necha himoya qatlamlari bilan ta'minlash",
+            "Faqat bitta juda qimmat xavfsizlik devoridan foydalanish",
+            "Barcha serverlarni er ostida saqlash",
+            "Faqat bitta kuchli administrator parolini qo'llash",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Axborot xavfsizligida 'Avtorizatsiya' nima?",
+          options: [
+            "Autentifikatsiyadan o'tgan foydalanuvchiga tizimdagi ma'lum bir resurslardan foydalanish huquqini berish",
+            "Foydalanuvchining loginini tekshirish",
+            "Tizim drayverlarini tekshirish",
+            "Zararli dasturlarni o'chirish bosqichi",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Identifikatsiya nima?",
+          options: [
+            "Foydalanuvchining tizimga o'zini tanitishi (masalan, login yoki foydalanuvchi nomini kiritishi)",
+            "Parolni tekshirish jarayoni",
+            "Barmoq izini skanerlash natijasi",
+            "Ma'lumotlarni shifrlash turi",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberxavfsizlik auditi (Audit) qanday turga bo'linadi?",
+          options: [
+            "Ichki audit (tashkilotning o'zi) va Tashqi audit (mustaqil sertifikatlangan tashkilotlar tomonidan)",
+            "Faqat pullik va bepul audit turlariga",
+            "Kompyuter drayverlari auditi va elektr tarmoqlari auditiga",
+            "Faqat Windows va Linux auditiga",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kriptografiyada 'Kriptotahlil' (Cryptanalysis) nimani o'rganadi?",
+          options: [
+            "Shifrlangan matnlarning maxfiy kalitini bilmagan holda ularning shifrini ochish va zaifliklarni topish usullarini",
+            "Yangi shifrlash algoritmlarini yaratishni",
+            "Kompyuter operativ xotirasini tozalashni",
+            "Tarmoq kabellarini ulash sxemalarini",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "DES (Data Encryption Standard) algoritmining kalit uzunligi necha bitni tashkil etadi?",
+          options: [
+            "56 bit (samarali kalit uzunligi)",
+            "128 bit",
+            "256 bit",
+            "1024 bit",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "AES algoritmining kalit uzunligi qaysi variantlarda bo'lishi mumkin?",
+          options: [
+            "128, 192 va 256 bit",
+            "56 va 64 bit",
+            "512 bit",
+            "Faqat 1024 bit",
+          ],
+          correct: 0,
+        },
+        {
+          question: "RSA algoritmi qaysi yili ishlab chiqilgan?",
+          options: [
+            "1977-yilda (Rivest, Shamir va Adleman tomonidan)",
+            "1995-yilda",
+            "2001-yilda",
+            "1985-yilda",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "MD5 xesh funksiyasi necha bitli natija (xesh qiymat) beradi?",
+          options: [
+            "128 bitli (32 ta o'n oltilik belgi)",
+            "160 bitli",
+            "256 bitli",
+            "64 bitli",
+          ],
+          correct: 0,
+        },
+        {
+          question: "SHA-256 xesh funksiyasi necha bitli natija qaytaradi?",
+          options: [
+            "256 bitli (64 ta o'n oltilik belgi)",
+            "128 bitli",
+            "512 bitli",
+            "1024 bitli",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Xesh funksiyalarda 'Kolliziya' (Collision) nima?",
+          options: [
+            "Ikki xil turli kirish matnining bir xil xesh qiymatga ega bo'lib qolish holati",
+            "Xesh qiymatning butunlay o'chib ketishi",
+            "Shifrlash kalitining yo'qolishi",
+            "Serverning haddan tashqari qizib ketishi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Ransomware hujumiga uchraganda eng to'g'ri birinchi chora nima?",
+          options: [
+            "Zararlangan kompyuterni zudlik bilan tarmoqdan (Wi-Fi yoki kabel) uzish, virus tarqalishini to'xtatish",
+            "Xaker so'ragan pulni darhol to'lash",
+            "Kompyuterni o'chirib qayta yoqish",
+            "Barcha fayllar nomini o'zgartirish",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Ijtimoiy muhandislikning 'Pretexting' turi nima?",
+          options: [
+            "Hujumchi o'zini boshqa bir rasmiy shaxs (masalan, bank xodimi yoki admin) sifatida tanishtirib ssenariy yaratishi",
+            "Faqat soxta veb-saytlar yaratish",
+            "Kompyuter ekranini masofadan kuzatish",
+            "Tarmoq trafigini to'xtatish",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Phishing va Spear Phishing o'rtasidagi farq nima?",
+          options: [
+            "Phishing ommaviy yuboriladi, Spear Phishing esa aniq bir maqsadli shaxs yoki tashkilotga qaratilgan bo'ladi",
+            "Spear Phishing faqat telefon orqali bo'ladi",
+            "Ular o'rtasida farq yo'q",
+            "Phishing xavfsizroq hisoblanadi",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Vishing (Voice Phishing) nima?",
+          options: [
+            "Telefon qo'ng'iroqlari va ovozli aloqa orqali amalga oshiriladigan fishing hujumi",
+            "Elektron pochta orqali virus tarqatish",
+            "Veb-saytlarga zararli skriptlar joylashish",
+            "Sms orqali keladigan fishing havolalar",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Smishing (SMS Phishing) nima?",
+          options: [
+            "Mobil telefonlarga soxta SMS xabarlar yuborish orqali amalga oshiriladigan fishing",
+            "Ovozli xabarlar orqali aldash",
+            "Server xonasini jismoniy buzish",
+            "Tarmoq trafigini o'g'irlash",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberxavfsizlikda 'Spam' nima?",
+          options: [
+            "Foydalanuvchi so'ramagan, ommaviy ravishda yuboriladigan keraksiz reklama yoki zararli xabarlar",
+            "Faqat shifrlangan maxfiy xatlar",
+            "Ma'lumotlar bazasining zaxira nusxasi",
+            "Operatsion tizim tizimli xabarlari",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Worm (Tarmoq qurti) viruslardan qanday farqlanadi?",
+          options: [
+            "Worm mustaqil ishlay oladi va inson omilisiz tarmoq bo'ylab avtomatik o'zini ko'paytira oladi",
+            "Worm zarar yetkazmaydi",
+            "Worm faqat rasmlar ichiga yashirinadi",
+            "Worm dastur kodini o'zgartira olmaydi",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Adware dasturlarining maqsadi nima?",
+          options: [
+            "Foydalanuvchiga majburiy ravishda istalmagan reklamalarni ko'rsatish va trafikdan daromad olish",
+            "Parollarni shifrlash",
+            "Ma'lumotlar bazasini o'chirish",
+            "Tizim tezligini oshirish",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Keylogger apparatli (Hardware) bo'lishi mumkinmi?",
+          options: [
+            "Ha, klaviatura va kompyuter porti o'rtasiga o'rnatiladigan kichik jismoniy qurilma shaklida bo'lishi mumkin",
+            "Yo'q, keylogger faqat dasturiy ta'minot bo'ladi",
+            "Faqat noutbuklarda apparatli bo'lishi mumkin",
+            "Faqat routerlar ichiga o'rnatiladi",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberxavfsizlikda 'Backdoor' nima?",
+          options: [
+            "Tizimga xavfsizlik mexanizmlarini aylanib o'tib, yashirincha masofadan kirish uchun qoldirilgan yo'l (tirqish)",
+            "Server xonasining orqa eshigi",
+            "Antivirus dasturining xavfsiz rejimi",
+            "Parollarni saqlash bazasining nomi",
+          ],
+          correct: 0,
+        },
+        {
+          question: "DoS (Denial of Service) hujumining asosiy maqsadi nima?",
+          options: [
+            "Server yoki tarmoqqa juda ko'p so'rov yuborib, uni ishdan chiqarish va qonuniy foydalanuvchilarga xizmat ko'rsatishni to'xtatish",
+            "Foydalanuvchi parolini o'g'irlash",
+            "Ma'lumotlarni shifrlab pul talab qilish",
+            "Yangi foydalanuvchilar yaratish",
+          ],
+          correct: 0,
+        },
+        {
+          question: "DDoS va DoS o'rtasidagi farq nimada?",
+          options: [
+            "DoS bitta kompyuterdan, DDoS esa bir vaqtning o'zida ko'plab zararlangan kompyuterlardan (botnetlardan) amalga oshiriladi",
+            "DoS faqat veb-saytlarga, DDoS esa faqat routerlarga qaratilgan",
+            "DDoS xavfsizroq xizmat turi hisoblanadi",
+            "Ular o'rtasida texnik farq yo'q",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Man-in-the-Middle (MitM) hujumi nima?",
+          options: [
+            "Hujumchining ikki aloqa ishtirokchisi o'rtasidagi trafikni yashirincha ushlab olishi, tinglashi va o'zgartirishi",
+            "Server binosiga ruxsatsiz kirib olish",
+            "Parollarni ketma-ket taxmin qilib ko'rish",
+            "Veb-sayt xostingini o'chirish",
+          ],
+          correct: 0,
+        },
+        {
+          question: "IP Spoofing nima?",
+          options: [
+            "Hujumchi uzatayotgan paketlarning chiquvchi IP manzilini soxtalashtirib, o'zini ishonchli manba qilib ko'rsatishi",
+            "Internet tezligini sun'iy ravishda oshirish",
+            "IP manzilni provayder orqali sotib olish",
+            "Router sozlamalarini zavod holatiga qaytarish",
+          ],
+          correct: 0,
+        },
+        {
+          question: "MAC Spoofing nima?",
+          options: [
+            "Tarmoq kartasining fizik (MAC) manzilini dasturiy ravishda o'zgartirib, tarmoq filtrlash tizimlarini aylanib o'tish",
+            "Parollarni xesh qiymatga o'tkazish",
+            "Wi-Fi router chastotasini o'zgartirish",
+            "Monitor drayverini yangilash",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Packet Sniffing nima?",
+          options: [
+            "Tarmoq bo'ylab uzatilayotgan paketlarni maxsus dasturlar (masalan, Wireshark) yordamida tutib olish va tahlil qilish",
+            "Tarmoq kabellarini jismoniy kesib qo'yish",
+            "Yangi tarmoq protokollarini yaratish",
+            "Server xonasini sovutish siyosati",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Port Scanning hujumi nima maqsadda amalga oshiriladi?",
+          options: [
+            "Serverda qaysi tarmoq portlari ochiqligi va ularda qaysi xizmatlar/operatsion tizim ishlayotganini (zaifliklarni) aniqlash uchun",
+            "Internet drayverini yuklab olish uchun",
+            "Parollarni kombinatsiyalash uchun",
+            "Monitor piksellarini tekshirish uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Brute Force hujumidan himoyalanishning eng yaxshi usuli qaysi?",
+          options: [
+            "Parolni bir necha marta noto'g'ri kiritganda akkauntni vaqtincha bloklash (Account Lockout) va CAPTCHA qo'llash",
+            "Parolni har kuni o'zgartirib turish",
+            "Faqat raqamlardan iborat parol qo'yish",
+            "Foydalanuvchi nomini yashirish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Dictionary Attack (Lug'at orqali hujum) Brute Forcedan nimasi bilan farq qiladi?",
+          options: [
+            "Brute Force barcha kombinatsiyalarni sinaydi, Lug'at hujumi esa faqat eng ko'p ishlatiladigan tayyor so'zlar ro'yxatidan foydalanadi",
+            "Lug'at hujumi faqat kitoblar ichida bo'ladi",
+            "Brute Force mutlaqo xavfsiz usuldir",
+            "Ular o'rtasida hech qanday farq yo'q",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "SQL Injection zaifligini kod darajasida qanday bartaraf etish mumkin?",
+          options: [
+            "Parametrlangan so'rovlardan (Parameterized Queries yoki Prepared Statements) foydalanish orqali",
+            "Veb-sayt dizaynini butunlay o'zgartirish orqali",
+            "Ma'lumotlar bazasini har soatda o'chirib yoqish bilan",
+            "Faqat antivirus dasturi o'rnatish orqali",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Stored XSS va Reflected XSS o'rtasidagi asosiy farq nima?",
+          options: [
+            "Stored XSS zararli skriptni ma'lumotlar bazasida doimiy saqlaydi, Reflected XSS esa skriptni so'rov javobida bir marta qaytaradi",
+            "Reflected XSS faqat SQL bazalarda ishlaydi",
+            "Stored XSS xavfsizroq hisoblanadi",
+            "Ular mutlaqo bir xil mexanizmdir",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Cross-Site Request Forgery (CSRF) hujumidan himoyalanish uchun qanday texnologiya qo'llaniladi?",
+          options: [
+            "Har bir sessiya so'rovi uchun maxsus Anti-CSRF tokenlaridan foydalanish",
+            "Faqat kuchli parollar o'rnatish",
+            "Veb-sayt IP manzilini yashirish",
+            "HTTPS protokolini o'chirib qo'yish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Buffer Overflow (Buferning to'lib ketishi) zaifligi nimaga olib kelishi mumkin?",
+          options: [
+            "Hujumchining operativ xotirada o'z ixtiyoriy zararli kodlarini ishga tushirishi yoki tizimni crash qilishi holatiga",
+            "Hard disk jismoniy xotirasining tozalanishiga",
+            "Monitor ranglarining buzilishiga",
+            "Internet tezligining oshishiga",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberxavfsizlikda 'Patch Management' nima?",
+          options: [
+            "Dasturiy ta'minot va operatsion tizimlardagi zaifliklarni yopish uchun yangilanishlarni (patch) o'z vaqtida sinash va o'rnatish jarayoni",
+            "Tarmoq kabellarini bino ichida tartibga solish",
+            "Parollarni lug'at asosida tahlil qilish",
+            "Ma'lumotlar bazasini yangidan chizish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Intrusion Prevention System (IPS) va Intrusion Detection System (IDS) farqi nimada?",
+          options: [
+            "IDS faqat shubhali harakatni aniqlaydi va ogohlantiradi, IPS esa hujumni aniqlab, uni avtomatik ravishda bloklaydi",
+            "IDS apparat qurilmasi, IPS esa faqat matnli fayldir",
+            "IPS faqat viruslarni davolaydi",
+            "Ular o'rtasida farq yo'q",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "WPA3 protokoli qaysi yildan boshlab joriy etildi va kiritildi?",
+          options: [
+            "2018-yilda (Wi-Fi xavfsizligini tubdan yaxshilash uchun)",
+            "2004-yilda",
+            "2010-yilda",
+            "2022-yilda",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Wi-Fi tarmoqlarida WEP protokolidan foydalanish nima uchun mutlaqo taqiqlangan?",
+          options: [
+            "Chunki u eskirgan, zaif RC4 algoritmiga asoslangan va uning parolini bir necha daqiqada buzish mumkin",
+            "U juda yuqori internet tezligini talab qiladi",
+            "U faqat pullik routerlarda ishlaydi",
+            "U drayverlar bilan mos kelmaydi",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberxavfsizlikda 'BYOD' qisqartmasi nimani anglatadi?",
+          options: [
+            "Bring Your Own Device — Xodimlarning shaxsiy mobil qurilmalaridan ish faoliyatida foydalanishi siyosati",
+            "Build Your Own Database — Shaxsiy ma'lumotlar bazasini yaratish",
+            "Buy Your Office Desktop — Ofis kompyuterlarini sotib olish",
+            "Bypass Official Domain — Rasmiy domenni chetlab o'tish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "MDM (Mobile Device Management) tizimi korporativ xavfsizlikda nimani ta'minlaydi?",
+          options: [
+            "Kompaniya ma'lumotlari bo'lgan qurilma yo'qolganda, undagi ma'lumotlarni masofadan turib butunlay o'chirib tashlash imkonini",
+            "Telefon qo'ng'iroqlarini bepul qilishni",
+            "Smartfon kamerasining ruxsatini oshirishni",
+            "Yangi SIM-kartalarni avtomatik sotib olishni",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Tashkilotda kiberxavfsizlik bo'yicha 'Xodimlarni o'qitish' (Security Awareness Training) qanchalik tez-tez o'tkazilishi kerak?",
+          options: [
+            "Muntazam ravishda (kamida yilda bir marta yoki yangi xavflar paydo bo'lganda doimiy)",
+            "Faqat korxona ochilgan birinchi kunda",
+            "Faqat biror kiberhujum sodir bo'lib zarar ko'rilgandan keyin",
+            "Xodimlarning xohishiga ko'ra",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Incident Response Plan (Kiberhodisalarga javob berish rejasi) ning maqsadi nima?",
+          options: [
+            "Kiberhujum sodir bo'lganda zararni kamaytirish, tizimlarni tezkor tiklash va hodisani tahlil qilish tartibini belgilash",
+            "Yangi dasturchilarni ishga olish rejasini tuzish",
+            "Yillik moliyaviy budjetni shakllantirish",
+            "Antivirus litsenziyasini uzaytirish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Business Continuity Plan (BCP - Biznes uzluksizligi rejasi) nima?",
+          options: [
+            "Har qanday falokat yoki kiberhujum paytida tashkilotning asosiy funksiyalari va biznesi to'xtab qolmasligini ta'minlovchi strategik reja",
+            "Faqat korxonaning yangi filiallarini ochish loyihasi",
+            "Xodimlarning oylik maoshini hisoblash dasturi",
+            "Kompyuter tarmoq xaritasining chizmasi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Disaster Recovery Plan (DRP) asosan kiberxavfsizlikning qaysi qismiga qaratilgan?",
+          options: [
+            "IT infratuzilmasi, serverlar va ma'lumotlarni falokatdan keyin texnik jihatdan qayta tiklashga",
+            "Faqat xodimlarning xavfsizlik kiyimlariga",
+            "Veb-sayt dizaynini marketing nuqtai nazaridan yaxshilashga",
+            "Yangi parollar lug'atini yaratishga",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlikda 'Risk Mitigation' (Riskni kamaytirish) nima?",
+          options: [
+            "Tegishli xavfsizlik choralarini (Firewall, VPN, Antivirus) joriy etish orqali risk darajasini qabul qilinadigan darajagacha pasaytirish",
+            "Risk borligini umuman inkor etish",
+            "Barcha kompyuterlarni sotib yuborish",
+            "Tizim auditi o'tkazishdan voz kechish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Risk Transfer (Riskni boshqaga o'tkazish) ga kiberxavfsizlikda nima misol bo'ladi?",
+          options: [
+            "Kiberxavfsizlik sug'urtasini (Cyber Insurance) sotib olish yoki IT xizmatlarini autsorsingga berish",
+            "Parollarni oddiy foydalanuvchilarga berish",
+            "Antivirus dasturini o'chirib qo'yish",
+            "Riskni dasturchining bo'yniga yuklash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Risk Acceptance (Riskni qabul qilish) qanday holatda tanlanadi?",
+          options: [
+            "Riskni bartaraf etish xarajatlari risk keltiradigan zarardan ancha yuqori bo'lgan kichik va ahamiyatsiz holatlarda",
+            "Tashkilotda umuman mablag' qolmaganda",
+            "Kiberhujum mutlaqo imkonsiz deb hisoblanganda",
+            "Faqat administrator buyrug'i bilan",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberxavfsizlikda 'Vulnerability' (Zaiflik) nima?",
+          options: [
+            "Tizim, dasturiy ta'minot yoki xavfsizlik siyosatidagi hujumchi foydalanishi mumkin bo'lgan har qanday xatolik, tirqish yoki kamchilik",
+            "Xakerlar foydalanadigan eng kuchli kompyuter",
+            "Antivirus dasturining eng yangi versiyasi",
+            "Tarmoq kabelining uzilib ketishi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Threat (Tahdid) deganda kiberxavfsizlikda nima tushuniladi?",
+          options: [
+            "Tizim zaifligidan foydalanib, aktivlarga zarar yetkazishi mumkin bo'lgan har qanday ob'ektiv salbiy hodisa yoki sub'ekt (xaker, virus, tabiiy ofat)",
+            "Dasturdagi imlo xatosi",
+            "Foydalanuvchining kompyuterni o'chirishi",
+            "Tarmoq tezligining pasayishi",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Exploit nima?",
+          options: [
+            "Tizimdagi aniq bir zaiflikdan (vulnerability) foydalanib, tizimni buzish yoki unga zarar yetkazish uchun yozilgan maxsus kod yoki dastur",
+            "Antivirus ma'lumotlar ombori",
+            "Tarmoq xavfsizligi darsligi",
+            "Kompyuter monitori drayveri",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlikda 'Principle of Least Privilege' tatbiq etilishi nimani kamaytiradi?",
+          options: [
+            "Tizim buzilganda hujumchining ichki tarmoq bo'ylab harakat qilish (lateral movement) va zarar yetkazish ko'lamini",
+            "Kompyuter quvvat sarfini",
+            "Dasturchilarning oylik maoshini",
+            "Ma'lumotlar bazasining tezligini",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Separation of Duties (Vazifalarni taqsimlash) tamoyilining kiberxavfsizlikdagi o'rni nima?",
+          options: [
+            "Kritik operatsiyalarni amalga oshirish huquqini bir necha kishiga bo'lish (masalan, bitta odam ham tizimni loyihalab, ham o'zi audit qila olmasligi)",
+            "Hamma xodimlarga bir xil huquq berish",
+            "Ish vaqtini qisqartirish",
+            "Barcha parollarni bitta odamda saqlash",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Biometrik tizimlarda 'False Acceptance Rate' (FAR) nima?",
+          options: [
+            "Tizim tomonidan begona (ruxsat berilmagan) shaxsni noto'g'ri ravishda tizimga kiritib yuborish ehtimoli ko'rsatkichi",
+            "Tizimning parollarni rad etishi",
+            "Barmoq izi skanerining tezligi",
+            "Yuzni tanish tizimining narxi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Biometrik tizimlarda 'False Rejection Rate' (FRR) nimani anglatadi?",
+          options: [
+            "Tizim ro'yxatdan o'tgan qonuniy foydalanuvchini noto'g'ri ravishda tanimay, tizimga kiritishni rad etish ko'rsatkichi",
+            "Begona shaxsning to'g'ri bloklanishi",
+            "Skaner drayverining yangilanishi",
+            "Grafik parollarning xatoligi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlikda 'Non-repudiation' (Inkor eta olmaslik) nima?",
+          options: [
+            "Raqamli imzo va loglar yordamida harakatni amalga oshirgan sub'ekt o'z harakatini (masalan, xat yuborganini) keyinchalik rad eta olmasligi holati",
+            "Parolni o'zgartira olmaslik",
+            "Antivirusni o'chira olmaslik",
+            "Internetni uzib qo'ya olmaslik",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "SIEM (Security Information and Event Management) tizimlarining vazifasi nima?",
+          options: [
+            "Butun tashkilot tarmoq qurilmalari va serverlaridan loglarni yig'ish, real vaqtda tahlil qilish va shubhali hodisalarni aniqlash",
+            "Faqat veb-sayt dizaynini chizish",
+            "Ma'lumotlar bazasini optimallashtirish",
+            "Xodimlarning parollarini saqlash",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlikda 'Log Analysis' (Loglarni tahlil qilish) nima uchun zarur?",
+          options: [
+            "Tizimda kim, qachon va qanday amalni bajarganini kuzatish va kiberhodisalarni tekshirish (forensics) uchun",
+            "Kompyuter xotirasini bo'shatish uchun",
+            "Internet drayverini yangilash uchun",
+            "Monitor piksellarini to'g'rilash uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Incident (Kiberhodisa) nima?",
+          options: [
+            "Tashkilot axborot xavfsizligi siyosatining buzilishi, tizim ishdan chiqishi yoki muvaffaqiyatli hujum holati",
+            "Dasturning muvaffaqiyatli yangilanishi",
+            "Yangi foydalanuvchining ro'yxatdan o'tishi",
+            "Kompyuterning normal ishlashi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlikda 'Data Classification' (Ma'lumotlarni tasniflash) nima uchun kerak?",
+          options: [
+            "Ma'lumotlarni muhimlik darajasiga ko'ra (Maxfiy, Ichki foydalanish uchun, Ommaviy) ajratib, mos himoya choralarini ko'rish uchun",
+            "Fayllarni alifbo tartibida saralash uchun",
+            "Hard disk hajmini tejash uchun",
+            "Faqat rasmlarni videolardan ajratish uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Data Loss Prevention (DLP) tizimlarining asosiy vazifasi nima?",
+          options: [
+            "Maxfiy va korporativ ma'lumotlarning ruxsatsiz tashqariga sizib chiqishi (jo'natilishi) ni aniqlash va avtomatik ravishda bloklash",
+            "O'chib ketgan fayllarni internetdan qidirish",
+            "Yangi parollar kombinatsiyasini yaratish",
+            "Kompyuter quvvatini boshqarish",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberxavfsizlikda 'Data in Transit' nima?",
+          options: [
+            "Kompyuter tarmoqlari (Internet yoki lokal tarmoq) orqali uzatilayotgan, harakatdagi ma'lumotlar",
+            "Qattiq diskda (Hard disk) saqlanib turgan ma'lumotlar",
+            "Operativ xotiradagi kesh fayllar",
+            "O'chirilgan fayllar to'plami",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberxavfsizlikda 'Data at Rest' nimani anglatadi?",
+          options: [
+            "Qattiq disk, fleshka yoki bulutli omborda statik holatda saqlanayotgan ma'lumotlar",
+            "Tarmoq orqali jo'natilayotgan ma'lumotlar",
+            "RAM xotiradagi o'zgaruvchilar",
+            "Brauzer keshidagi vaqtinchalik ma'lumotlar",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberxavfsizlikda 'Data in Use' nima?",
+          options: [
+            "Hozirgi vaqtda protsessor yoki operativ xotira (RAM) tomonidan faol qayta ishlanayotgan ma'lumotlar",
+            "Arxiv ichida yopiq turgan fayllar",
+            "Optik disklarga yozilgan ma'lumotlar",
+            "Tarmoq kabelidan o'tayotgan paketlar",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Cryptographic Hash funksiyalari tuzatib bo'lmas (Irreversible) hisoblanadimi?",
+          options: [
+            "Ha, xesh qiymatdan orqaga qarab boshlang'ich matnni olish matematik jihatdan imkonsizdir",
+            "Yo'q, maxsus kalit yordamida xeshni osongina matnga aylantirish mumkin",
+            "Faqat MD5 algoritmi qaytardir",
+            "Faqat Windows tizimlarida qaytardir",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Salting (Tuzlash) texnologiyasi xeshlashda nima uchun ishlatiladi?",
+          options: [
+            "Bir xil parollarning xesh qiymati turlicha chiqishi va Rainbow Table hujumlaridan himoyalanish uchun xeshdan oldin tasodifiy ma'lumot qo'shish",
+            "Xeshlash tezligini bir necha barobar oshirish uchun",
+            "Fayllarni siqib hajmini kichraytirish uchun",
+            "Parollarni foydalanuvchiga eslatib turish uchun",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kriptografiyada Simmetrik algoritmlar Asimmetrik algoritmlardan qanday ustunlikka ega?",
+          options: [
+            "Simmetrik algoritmlar ma'lumotlarni qayta ishlash va shifrlash tezligi jihatidan ancha tezkor hisoblanadi",
+            "Simmetrik algoritmlarda kalit uzatish muammosi umuman yo'q",
+            "Simmetrik algoritmlar raqamli imzoni mukammal qo'llaydi",
+            "Ular hech qanday kalit talab qilmaydi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kriptografiyada Asimmetrik algoritmlarning Simmetrik algoritmlardan asosiy ustunligi nimada?",
+          options: [
+            "Kalitlarni taqsimlash muammosini hal qiladi va raqamli imzoni (Non-repudiation) ta'minlaydi",
+            "Shifrlash tezligi bir necha yuz barobar tezroq",
+            "Hech qanday matematik hisob-kitoblarni talab qilmaydi",
+            "Faqat mahalliy tarmoqlardagina ishlaydi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "PKI (Public Key Infrastructure - Ochiq kalitlar infratuzilmasi) nima vazifani bajaradi?",
+          options: [
+            "Raqamli sertifikatlarni chiqarish, boshqarish, tarqatish, saqlash va bekor qilishni ta'minlovchi tizim",
+            "Faqat kompyuter tarmoq drayverlarini tekshirish tizimi",
+            "Parollarni lug'at yordamida buzish infratuzilmasi",
+            "Routerlar uchun mo'ljallangan maxsus operatsion tizim",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Certificate Authority (CA - Sertifikatlash markazi) nima?",
+          options: [
+            "Foydalanuvchilar va veb-saytlarning ochiq kalitlariga raqamli sertifikat beruvchi ishonchli uchinchi tomon tashkiloti",
+            "Antivirus dasturlarini litsenziyalovchi kompaniya",
+            "Davlat kiberpolitsiyasi bo'limi",
+            "Veb-serverlarni DoS hujumidan himoya qiluvchi qurilma",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Digital Certificate (Raqamli sertifikat) ichida nimalar saqlanadi?",
+          options: [
+            "Sertifikat egasining ism/ domeni, uning ochiq kaliti, CA raqamli imzosi va amal qilish muddati",
+            "Foydalanuvchining barcha maxfiy parollari",
+            "Korxonaning moliyaviy hisobotlari",
+            "Operatsion tizimning yadro kodlari",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Atbash shifrining ishlash prinsipi qanday?",
+          options: [
+            "Alifboni teskari tartibda o'girib, birinchi harfni oxirgisiga, ikkinchisini oxiridan ikkinchisiga almashtirish",
+            "Har bir harfni 3 qadam o'ngga surish",
+            "Harflarni maxsus tayoqchaga o'rash",
+            "Matn ichiga tasodifiy raqamlar joylashtirish",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberxavfsizlikda 'Steganografiya' nima?",
+          options: [
+            "Maxfiy ma'lumotning mavjudlik faktining o'zini boshqa ob'ekt (masalan, rasm yoki audio) ichiga yashirish fani",
+            "Matnlarni murakkab matematik kalitlar bilan shifrlash",
+            "Zararlangan kompyuterlar tarmog'ini boshqarish",
+            "Ma'lumotlar bazasidan SQL so'rovlar yuborish",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Steganografiya va Kriptografiya o'rtasidagi farq nimada?",
+          options: [
+            "Kriptografiya xabarni o'qib bo'lmaydigan qiladi, Steganografiya esa xabarning borligini mutlaqo yashiradi",
+            "Kriptografiya faqat rasmlarda ishlaydi",
+            "Steganografiya davlat qonunlari bilan taqiqlangan, kriptografiya esa yo'q",
+            "Ular mutlaqo bitta tushunchaning ikki xil nomlanishidir",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Firewall turlaridan biri bo'lgan NGFW (Next-Generation Firewall) oddiy firewalldan nimasi bilan farq qiladi?",
+          options: [
+            "U paketlarni chuqur tahlil qiladi (Deep Packet Inspection), ilovalar darajasida filtrlaydi va tarkibida IPS mavjud",
+            "U faqat simsiz Wi-Fi tarmoqlarida ishlaydi",
+            "U parollarni lug'at orqali avtomatik tekshira oladi",
+            "U mutlaqo bepul va ochiq kodli dasturiy ta'minotdir",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlikda 'DMZ' (Demilitarized Zone - Demilitarizatsiyalangan zona) nima uchun tashkil etiladi?",
+          options: [
+            "Tashkilotning tashqi dunyoga ochiq serverlarini (veb-sayt, pochta) ichki maxfiy tarmoqdan ajratib himoya qilish uchun",
+            "Server xonasidagi harbiy qo'riqchilarni belgilash uchun",
+            "B barcha zararlangan virusli kompyuterlarni saqlash joyi",
+            "Router sozlamalarini masofadan bloklash zonasi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Proxy Server (Proksi server) kiberxavfsizlik va tarmoqda nima vazifani bajaradi?",
+          options: [
+            "Foydalanuvchi va internet o'rtasida vositachi bo'lib, IP manzilni yashiradi, trafikni keshlaydi va filtrlaydi",
+            "Faqat kompyuter ekran tasvirini boshqa serverga uzatadi",
+            "Hard disk xotirasini optimallashtiradi",
+            "Zararli dasturlarni avtomatik o'chiradi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            " Honeypot tizimining asosiy qonuniy va xavfsizlik cheklovi nimada?",
+          options: [
+            "Honeypot tizimining o'zi buzib kirilib, xakerlar tomonidan ichki tarmoqqa hujum qilish uchun tramplin sifatida ishlatilmasligi kerak",
+            "U faqat ingliz tilida ishlashi shart",
+            "U juda ko'p elektr energiyasi sarflaydi",
+            "U litsenziyasiz mutlaqo ishlamaydi",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlikda 'Zero Trust' arxitekturasining 3 ta asosiy ustuni qaysilar?",
+          options: [
+            "Doimiy aniq autentifikatsiya, eng kam imtiyoz berish (Least Privilege) va tizim har doim buzilgan deb taxmin qilish",
+            "Kuchli parol, yangi antivirus va o't o'chirish tizimi",
+            "Faqat VPN, faqat Proxy va faqat BitLocker dasturlari",
+            "Administrator, Foydalanuvchi va Mehmon huquqlarini o'chirish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Tashkilotda kiberxavfsizlik siyosatini (Security Policy) buzgan xodimlarga nisbatan qanday choralar ko'rilishi hujjatda belgilanishi kerak?",
+          options: [
+            "Intizomiy choralar, ogohlantirish, jarima yoki mehnat shartnomasini bekor qilishgacha bo'lgan qonuniy choralar",
+            "Faqat kompyuterini musodara qilish",
+            "Xodimning oyligini ikki barobar oshirish",
+            "Hech qanday chora ko'rilmaydi, bu taqiqlangan",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlikda 'Incident Forensics' (Kiber-ekspertiza) nima?",
+          options: [
+            "Hujum sodir bo'lgandan keyin loglar va fayllarni tahlil qilib, hujum qanday, kim tomonidan va qachon sodir etilganini aniqlash fani",
+            "Dasturning grafik interfeysini chizish bosqichi",
+            "Tarmoq routerlarini yangi modellarga almashtirish",
+            "Parollarni lug'at yordamida generatsiya qilish",
+          ],
+          correct: 0,
+        },
+        {
+          question:
+            "Kiberxavfsizlik xalqaro standarti ISO/IEC 27001 nimani tartibga soladi?",
+          options: [
+            "Tashkilotlarda Axborot Xavfsizligini Boshqarish Tizimini (ISMS) yaratish va joriy etish talablarini",
+            "Faqat C++ va Python tillarida xavfsiz kod yozish qoidalarini",
+            "Kompyuter protsessorlarining harorat me'yorlarini",
+            "Internet provayderlar shartnomalarini",
+          ],
+          correct: 0,
+        },
+        {
+          question: "Kiberxavfsizlikda 'Threat Intelligence' nima?",
+          options: [
+            "Mavjud va global kiberhujumlar, xakerlik guruhlari, ularning usullari (TTP) haqidagi ma'lumotlarni yig'ish va tahlil qilish tizimi",
+            "Sun'iy intellektga asoslangan mukammal antivirus turi",
+            "Tizim ma'murlarining umumiy intellekt darajasi",
+            "Parollarni xavfsiz saqlash bo'yicha darslik",
+          ],
+          correct: 0,
+        },
+      ];
+
+      // Ikkala massivni birlashtirish -> jami 141 ta noyob test
+      allQuestions.push(...remainingQuestions);
+
+      let selectedQuestions = [];
+      let currentQuestionIndex = 0;
+      let score = 0;
+      let hasAnswered = false;
+      let quizCount = 25; // Default miqdor
+
+      function selectCount(count, element) {
+        quizCount = count;
+        document
+          .querySelectorAll(".mode-btn")
+          .forEach((btn) => btn.classList.remove("selected"));
+        element.classList.add("selected");
+      }
+
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      function startQuiz() {
+        const shuffled = shuffleArray([...allQuestions]);
+        selectedQuestions = shuffled.slice(
+          0,
+          Math.min(quizCount, shuffled.length),
+        );
+
+        currentQuestionIndex = 0;
+        score = 0;
+        document.getElementById("score-counter").textContent =
+          `To'g'ri javoblar: 0`;
+
+        document.getElementById("setup-screen").classList.add("hidden");
+        document.getElementById("quiz-screen").classList.remove("hidden");
+
+        loadQuestion();
+      }
+
+      function loadQuestion() {
+        hasAnswered = false;
+        const nextBtn = document.getElementById("next-btn");
+        nextBtn.disabled = true;
+
+        const optionsContainer = document.getElementById("options-container");
+        optionsContainer.innerHTML = "";
+
+        const currentQuestion = selectedQuestions[currentQuestionIndex];
+
+        document.getElementById("question-text").textContent =
+          `${currentQuestionIndex + 1}. ${currentQuestion.question}`;
+        document.getElementById("question-number").textContent =
+          `Savol: ${currentQuestionIndex + 1}/${selectedQuestions.length}`;
+
+        const progressPercentage =
+          (currentQuestionIndex / selectedQuestions.length) * 100;
+        document.getElementById("progress-bar").style.width =
+          `${progressPercentage}%`;
+
+        // Variantlar tartibini tasodifiy aralashtirish
+        const optionsMapping = currentQuestion.options.map((opt, index) => ({
+          text: opt,
+          originalIndex: index,
+        }));
+        shuffleArray(optionsMapping);
+
+        optionsMapping.forEach((item) => {
+          const button = document.createElement("button");
+          button.classList.add("option-btn");
+          button.textContent = item.text;
+          button.addEventListener("click", () =>
+            selectOption(item.originalIndex, currentQuestion.correct, button),
+          );
+          optionsContainer.appendChild(button);
+        });
+      }
+
+      function selectOption(originalIndex, correctIndex, selectedButton) {
+        if (hasAnswered) return;
+        hasAnswered = true;
+
+        const optionsContainer = document.getElementById("options-container");
+        const allButtons = optionsContainer.querySelectorAll(".option-btn");
+
+        allButtons.forEach((btn) => {
+          btn.disabled = true;
+        });
+
+        if (originalIndex === correctIndex) {
+          selectedButton.classList.add("correct");
+          score++;
+          document.getElementById("score-counter").textContent =
+            `To'g'ri javoblar: ${score}`;
+        } else {
+          selectedButton.classList.add("wrong");
+          const correctText =
+            selectedQuestions[currentQuestionIndex].options[correctIndex];
+          allButtons.forEach((btn) => {
+            if (btn.textContent === correctText) btn.classList.add("correct");
+          });
+        }
+
+        document.getElementById("next-btn").disabled = false;
+      }
+
+      document.getElementById("next-btn").addEventListener("click", () => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < selectedQuestions.length) {
+          loadQuestion();
+        } else {
+          showResults();
+        }
+      });
+
+      function showResults() {
+        document.getElementById("progress-bar").style.width = "100%";
+        document.getElementById("quiz-screen").classList.add("hidden");
+        document.getElementById("result-screen").classList.remove("hidden");
+
+        document.getElementById("final-score").textContent =
+          `${score}/${selectedQuestions.length}`;
+
+        const percent = (score / selectedQuestions.length) * 100;
+        const resultMessage = document.getElementById("result-message");
+        if (percent >= 85) {
+          resultMessage.textContent =
+            "A'lo natija! Kiberxavfsizlik fanidan yakuniy nazoratga tayyorgarligingiz mukammal! 🚀";
+          resultMessage.style.color = "var(--success)";
+        } else if (percent >= 60) {
+          resultMessage.textContent =
+            "Yaxshi natija! Bilimlaringizni yanada mustahkamlash uchun xatolar ustida ishlang. 👍";
+          resultMessage.style.color = "var(--accent)";
+        } else {
+          resultMessage.textContent =
+            "Afsuski, natija past. Yakuniy imtihongacha barcha savollarni qayta ko'rib chiqishingiz tavsiya etiladi.";
+          resultMessage.style.color = "var(--danger)";
+        }
+      }
+
+      function restartQuiz() {
+        document.getElementById("result-screen").classList.add("hidden");
+        document.getElementById("setup-screen").classList.remove("hidden");
+      }
+    </script>
+    <p style="text-align: center;">created by <a target="_blank" href="https://boburnasimovich.uz">Bobur</a></p>
+  </body>
+</html>
